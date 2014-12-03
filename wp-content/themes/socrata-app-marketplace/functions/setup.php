@@ -36,7 +36,8 @@ function register_my_menus() {
   register_nav_menus(
     array(
         'persona' => __( 'Persona Menu' ),
-        'industry' => __( 'Industry Menu' )
+        'industry' => __( 'Industry Menu' ),
+        'resources' => __( 'Resources Menu' )
     )
   );
 }

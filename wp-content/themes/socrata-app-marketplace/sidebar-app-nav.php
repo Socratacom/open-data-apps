@@ -7,5 +7,7 @@
     )); ?>
     <h5>Industry/Vertical</h5>
     <?php wp_nav_menu( array( 'theme_location' => 'industry' ) ); ?>
+    <h5>Resources</h5>
+    <?php wp_nav_menu( array( 'theme_location' => 'resources' ) ); ?>
 </div>
 <p><a href="/apps/submit-app/" class="btn btn-primary btn-block" role="button">Submit Your App</a></p>

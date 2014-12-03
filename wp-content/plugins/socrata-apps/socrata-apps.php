@@ -106,6 +106,30 @@ function socrata_apps_industry() {
   );
 }
 
+add_action( 'init', 'socrata_apps_resources', 0 );
+
+function socrata_apps_resources() {
+  register_taxonomy(
+    'socrata_apps_resources',
+    'socrata_apps',
+    array(
+      'labels' => array(
+        'name' => 'Resources',
+        'menu_name' => 'Resources',
+        'add_new_item' => 'Add New',
+        'new_item_name' => "New Resource"
+      ),
+      'show_ui' => true,
+      'show_tagcloud' => false,
+      'hierarchical' => true,
+      'sort' => true,      
+      'args' => array( 'orderby' => 'term_order' ),
+      'show_admin_column' => true,
+      'rewrite' => array('with_front' => false, 'slug' => 'resources')
+    )
+  );
+}
+
 // TEMPLATE PATHS
 add_filter( 'template_include', 'socrata_apps_single_template_function', 1 );
 function socrata_apps_single_template_function( $template_path ) {

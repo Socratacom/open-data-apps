@@ -1,4 +1,4 @@
-<?
+<?php
 
 $prefix = 'socrata_apps_';
 
