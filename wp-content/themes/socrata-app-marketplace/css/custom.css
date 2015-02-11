@@ -1101,6 +1101,23 @@ ul#platformIcons {
 .icon-windows:before {
 	content: "\e60a";
 }
+.icon-search:before {
+	content: "\e611";
+}
+.icon-mobile2:before {
+	content: "\e60f";
+}
+.icon-arrow-right:before {
+	content: "\e612";
+}
+.icon-arrow-left:before {
+	content: "\e613";
+}
+.icon-screen:before {
+	content: "\e610";
+}
+
+
 /*******************************/
 /* Bootstrap Override */
 /*******************************/
@@ -1587,39 +1604,3 @@ fieldset[disabled] .btn-link:focus {
 	margin-bottom: 30px;
 }
 
-
-/* Tile carousels */
-.slick-prev, .slick-next {
-	margin-top: 0;
-	transform: translateY(-50%);
-	padding: 50px 0;
-	-moz-box-sizing: content-box;
-	-webkit-box-sizing: content-box;
-	box-sizing: content-box;
-}
-
-.slick-prev:before, .slick-next:before {
-	color: #333;
-	font-family: 'icomoon';
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-.slick-prev:before {
-	content: "\e601";
-}
-
-.slick-next:before {
-	
-	content: "\e600";
-}
-
-.carousel .tile {
-	margin-bottom: 0;
-}

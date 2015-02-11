@@ -46,14 +46,19 @@ function create_socrata_apps() {
 
 function plugin_scripts() {
 
-  wp_enqueue_style( 'icomoon-css', plugins_url( '/assets/icomoon/style.css' , __FILE__ ) );
+  wp_register_style( 'slick-carousel', plugins_url( '/assets/slick/slick.css' , __FILE__ ), array(), false, 'all' );
+  wp_enqueue_style( 'slick-carousel' );
 
-  wp_enqueue_style( 'slick-carousel-css', plugins_url( '/assets/slick/slick.css' , __FILE__ ) );
-  wp_enqueue_style( 'slick-carousel-theme-css', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ) );
+  wp_enqueue_style( 'slick-carousel-theme', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ), array(), false, 'all' );
+  wp_enqueue_style( 'slick-carousel-theme' );
+
+  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array('custom-css', 'slick-carousel'), false, 'all' );
+  wp_enqueue_style( 'socrata-apps' );
 
   wp_enqueue_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), array(), false, true );
   
   wp_enqueue_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), array(), false, true );
+  
 
   // wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/Shuffle-master/css/style.css' , __FILE__ ) );
   // wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/Shuffle-master/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
