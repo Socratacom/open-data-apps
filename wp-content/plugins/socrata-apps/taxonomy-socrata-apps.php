@@ -9,6 +9,9 @@
 		</div>
 
 		<div class="col-xs-12 col-sm-8 col-md-9"><!-- App Tiles -->
+
+			<?php include('filter-bar.php'); ?>
+
 			<div class="row">
 				<div id="content">
 					<div class="col-xs-12">

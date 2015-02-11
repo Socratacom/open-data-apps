@@ -29,9 +29,6 @@ h2 {
 h2:empty {
 	display: none;
 }
-.archive h2 {
-	margin-top:0;
-}
 
 h5 {
 	font-weight: 600;
@@ -52,6 +49,7 @@ p {
 	font-size: 24px;
 	line-height: 24px;
 	margin-bottom: 30px;
+	margin-top: 0;
 }
 
 /*******************************/
@@ -88,6 +86,20 @@ p {
 	width:100%;
 	margin:0;
 }
+
+.field-search-icon {
+	background: url(../images/search.svg) no-repeat 10px / 16px;
+	border-radius: 5px; 
+	border: 1px solid #ccc; 
+	padding: 8px 12px 8px 36px; 
+	width: 100%; 
+	opacity: .5;
+}
+
+.field-search-icon:focus {
+	opacity: 1;
+}
+
 @media screen and (max-width: 600px) {
 	.lg-logo {
 		left:80px;
@@ -570,6 +582,12 @@ ul.tile-certified {
 /*******************************/
 /* Detail Page Panel */
 /*******************************/
+.app-specs-column {
+	width: 30%;
+}
+.app-desc-column {
+	width: 70%;
+}
 .app-title-panel {
 	padding:30px;
 	border:none;
@@ -590,11 +608,37 @@ ul.tile-certified {
 	font-size:13px;
 	color:#999;	
 	margin:0 0 10px 0;
+	padding: 0;
 }
 .app-title-panel ul {
 	list-style-type: none;
 	padding:0;
 }
+.app-description {
+	margin-top: 20px;
+	margin-bottom: 50px;
+}
+.app-description .text {
+	margin-bottom: 10px;
+	position: relative;
+}
+.app-description .text p:last-of-type{
+	margin-bottom: 0;
+}
+.app-description .text[aria-expanded="false"]:after {
+	display: block;
+	content: '';
+	box-shadow: 0 -50px 50px -10px rgba(233, 233, 233, 1) inset;
+	position: absolute;
+	bottom: 0;
+	z-index: 999;
+	height: 100%;
+	width: 100%;
+}
+.app-description .text[aria-expanded="true"]:after {
+	display: none;
+}
+
 ul.app-specs {
 	margin:0;
 	padding:0;
@@ -609,7 +653,7 @@ ul.app-specs {
 	margin: 0;
 }
 .app-specs li:first-child {
-	margin-right: 0px;
+	margin-right: 0;
 }
 .app-specs li:last-child {
 	margin-right: 0;
@@ -620,12 +664,54 @@ ul.app-specs {
 .app-specs a:hover {
 	text-decoration: none;
 }
+.app-buttons {
+	padding: 0;
+	margin: 0 0 40px;
+}
 .app-buttons li {
 	display: inline-block;
 	margin-right: 5px;
 }
 .app-buttons li:last-child {
 	margin:0;
+}
+.app-specs-column .app-buttons li {
+	display: block;
+	width: 100%;
+}
+.app-specs-column .app-buttons li button,
+.app-specs-column .app-buttons li .btn {
+	margin-bottom: 10px;
+	width: 100%;
+}
+.app-meta-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	font-size: 14px;
+}
+.app-meta-list li {
+	margin-bottom: 24px;
+}
+.app-meta-list ul {
+	padding: 0;
+	list-style: none;
+	margin-top: 10px;
+}
+.app-meta-list ul li {
+	margin-bottom: 5px;
+}
+.app-meta-list ul li a {
+	font-size: 13px;
+}
+.app-meta-list h5 {
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+.app-meta-list .icon {
+	display: inline-block;
+	padding: 5px 20px 0 0;
+	font-size: 28px;
 }
 .app-terms {
 	padding-top:15px;
@@ -647,10 +733,37 @@ ul.app-specs {
 	margin: 0 10px;
 	vertical-align: middle;
 }
+.cost-toggle {
+  width: 120px; 
+  height: 25px; 
+  border: 1px solid #2ecc71; 
+  border-radius: 5px;
+}
+
+.side {
+  width:50%; 
+  float:left; 
+  text-align: center; 
+  height: 100%; 
+  border-radius: 4px 0 0 4px; 
+  line-height: 23px; 
+  background: #fff; 
+  color: #ddd;
+  font-size: 12px;
+}
+
+.side.active {
+  color: #fff;
+  background: #2ecc71;
+}
+
+.side.right {
+  border-radius: 0 4px 4px 0;
+}
 @media screen and (max-width: 320px) {
 	.app-buttons li {
 		display: block;
-		margin-right: 0px;
+		margin-right: 0;
 	}
 	.app-buttons li:last-child {
 		margin:10px 0;
@@ -673,7 +786,7 @@ ul.app-specs {
 	background-color: #f1f1f1;
 	text-transform: uppercase;
 	border-bottom-color: #f1f1f1;
-	box-shadow: -6px 0px 5px -5px #dddddd, 6px 0px 5px -5px #dddddd;
+	box-shadow: -6px 0 5px -5px #dddddd, 6px 0 5px -5px #dddddd;
 }
 .nav-tabs>li>a {
 	text-transform: uppercase;
@@ -770,8 +883,8 @@ img.img-responsive {
 	background-color:#999;
 }
 .carousel-indicators .active {
-	background-color: #3366cc;
-	border-color:#3366cc;
+	background-color: #3498db;
+	border-color:#3498db;
 }
 .single-screen {
 	margin-bottom:30px;
@@ -1455,10 +1568,7 @@ fieldset[disabled] .btn-link:focus {
 }
 
 
-/*.carousel .slick-slide {
-	padding: 0 10px;
-}*/
-
+/* Tile carousels */
 .slick-prev, .slick-next {
 	margin-top: 0;
 	transform: translateY(-50%);

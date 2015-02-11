@@ -44,16 +44,22 @@ function create_socrata_apps() {
   );
 }
 
-function theme_name_scripts() {
+function plugin_scripts() {
+
+  wp_enqueue_style( 'icomoon-css', plugins_url( '/assets/icomoon/style.css' , __FILE__ ) );
+
   wp_enqueue_style( 'slick-carousel-css', plugins_url( '/assets/slick/slick.css' , __FILE__ ) );
   wp_enqueue_style( 'slick-carousel-theme-css', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ) );
 
   wp_enqueue_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), array(), false, true );
   
+  wp_enqueue_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), array(), false, true );
+
   // wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/Shuffle-master/css/style.css' , __FILE__ ) );
   // wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/Shuffle-master/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
+
 }
-add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
+add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
 
 // MENU ICON
 // Using Dashicon Font http://melchoyce.github.io/dashicons/
@@ -162,8 +168,8 @@ function socrata_apps_single_template_function( $template_path ) {
 
 add_filter( 'template_include', 'socrata_apps_archive_template_function', 1 );
 function socrata_apps_archive_template_function( $template_path ) {
-  if ( get_post_type() == 'socrata_apps' ) {
-    if ( is_archive() ) {
+  if ( get_post_type() == 'socrata_apps' || is_front_page() ) {
+    if ( is_archive() || is_front_page() ) {
       // checks if the file exists in the theme first,
       // otherwise serve the file from the plugin
       if ( $theme_file = locate_template( array ( 'archive-socrata-apps.php' ) ) ) {
@@ -197,16 +203,18 @@ function display_app_tile($app) { ?>
                   
   <div class="tile tile-md">
     <div class="tile-image">
-      <a href="<?php the_permalink(); ?>"><?php echo $app->ID; $meta = get_socrata_apps_meta($app->ID); echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?></a>
+      <a href="<?php echo get_permalink($app->ID); ?>">
+        <?php $meta = get_socrata_apps_meta($app->ID); echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
+      </a>
     </div>
     <div class="tile-content">        
       <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
       <h3><?php echo $app->post_title; ?></a></h3>
       <p class=" tile-fade"><?php $meta = get_socrata_apps_meta($app->ID); if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
-      <a href="<?php the_permalink(); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
+      <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
       <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
       <div class="tile-overlay"></div>
-      <a href="<?php the_permalink(); ?>" class="tile-link"></a>
+      <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
     </div>
   </div>
 
@@ -222,8 +230,6 @@ function get_apps_tiles_by_term($term) {
   $terms = get_terms( $term, $args );
 
   $loaded_apps = array();
-  // $all_loaded_apps = array();
-  
 
   foreach ( $terms as $term ) {
 
@@ -249,7 +255,7 @@ function get_apps_tiles_by_term($term) {
       );
       $apps = get_posts( $args );
 
-      echo '<h2 class="title">Apps for ' . $term->name . ' (' . count($apps) . ')</h2>';
+      echo '<h2 class="title">Apps for ' . $term->name . '</h2>';
 
       echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 60px; margin-left: 20px; margin-right: 20px">';
 
@@ -278,12 +284,6 @@ function get_apps_tiles_by_term($term) {
 
       echo '</div>';
 
-      foreach ($loaded_apps as $app) {
-        echo $app->ID . ' &nbsp; ';
-      }
-
-      // var_dump($term);
-
       echo '<script>
               $(document).ready(function(){
                 $(\'.row.carousel.'. $term->slug .'\').slick({
@@ -292,24 +292,6 @@ function get_apps_tiles_by_term($term) {
                 });
               });
             </script>';
-
-        // echo 'all loaded apps: ';
-        // foreach ($all_loaded_apps as $app) {
-        // echo $app->ID . '  ';
-        // }
-
-        // echo '<br>';
-
-        // echo 'skipped apps: ';
-        // foreach ($skipped_apps as $app) {
-        // echo $app->ID . '  ';
-        // }
-
-        // echo '<br>';
-        // echo 'term_loaded_apps: ';
-        // foreach ($term_loaded_apps as $app) {
-        // echo $app->ID . '  ';
-        // }
 
   }
 
