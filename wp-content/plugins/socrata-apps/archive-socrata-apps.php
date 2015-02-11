@@ -1,6 +1,25 @@
 <?php get_header(); ?>
 
 <div class="container">
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="hero">
+        <div class="row">
+            <div class="col-md-7" style="text-align:left">
+                <h1 style="margin:0; font-weight: 300; margin-bottom: 30px; x">Civic App Developers, <br>we want your app.</h1>
+                <p style="font-weight: 300; line-height: 1.5; font-size: 18px; margin-bottom: 20px;">For civic application developers it provides an ideal vehicle to grow you business.</p>
+                <p style="font-weight: 300; line-height: 1.5; font-size: 18px; ">For government buyers and consumers the Marketplace organizes and facilitates easy discoverability of engaging applications.</p>
+                <a href="#" class="btn btn-large btn-outline">Submit your app here</a>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="container">
 
     <div class="row">
 

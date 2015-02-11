@@ -1567,6 +1567,26 @@ fieldset[disabled] .btn-link:focus {
   margin: 0 1px;
 }
 
+.btn-outline {
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 10px 30px;
+    font-size: 18px;
+}
+
+.btn-outline:hover {
+    background: #fff;
+    color: #3498DB;
+}
+
+.hero {
+	padding:60px 70px 70px; 
+	background: url(../images/submit-app-hero-bg.png) no-repeat 150% 160% #3498db; 
+	min-height: 400px; 
+	color:#fff; 
+	margin-bottom: 30px;
+}
+
 
 /* Tile carousels */
 .slick-prev, .slick-next {
