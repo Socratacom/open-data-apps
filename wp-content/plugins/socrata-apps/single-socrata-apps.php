@@ -1,53 +1,73 @@
 <?php get_header(); ?>
-
 <div class="container">
-
-  <div class="row visible-xs">
-    <div class="col-xs-12">
-      <button style="margin-bottom: 20px;" type="button" class="pull-right btn btn-default" data-toggle="offcanvas">Off-canvas sidebar <i class="glyphicon glyphicon-arrow-right"></i>
-      </button>
-		</div>
-  </div>
-  <div class="row row-offcanvas row-offcanvas-right">
-    
-    <div class="col-xs-12 col-sm-8">
-      <div id="content" role="main">
-        <?php if(have_posts()): while(have_posts()): the_post();?>
-        <article role="article" id="post_<?php the_ID()?>" <?php post_class()?>>
-          <header>
-            <h1>FUCK YOU MOTHER FUCKER</h1>
-            <div><?php $meta = get_myplugin_meta(); if ($meta[0]) echo "$meta[0]"; ?></div>
-            <h2><?php the_title()?></h2>
-            <h4>
-              <em>
-                <span class="text-muted" class="author">By <?php the_author() ?>,</span>
-                <time  class="text-muted" datetime="<?php the_time('d-m-Y')?>"><?php the_time('jS F Y') ?></time>
-              </em>
-            </h4>
-            <p class="text-muted" style="margin-bottom: 30px;">
-              <i class="glyphicon glyphicon-folder-open"></i>&nbsp; Filed under: <?php _e(''); ?> <?php the_category(', ') ?><br/>
-              <i class="glyphicon glyphicon-comment"></i>&nbsp; Comments: <?php comments_popup_link('None', '1', '%'); ?>
-            </p>
-          </header>
-          <?php the_post_thumbnail(); ?>
-          <?php the_content()?>
-          <hr/>
-        </article>
-        <?php comments_template('/comments.php'); ?>
-        <?php endwhile; ?>
-        <?php else: ?>
-        <?php wp_redirect(get_bloginfo('siteurl').'/404', 404); exit; ?>  
-        <?php endif;?>
-      </div><!-- #content -->
+  <div class="row">
+    <div class="col-sm-4 col-md-3 hidden-xs"><!-- Left Nav -->
+      <?php get_template_part( 'sidebar-app-nav' ); ?>
     </div>
-    
-    <div class="col-xs-6 col-sm-4 sidebar-offcanvas" id="sidebar" role="navigation">
-      <div class="panel panel-default">
-        <?php get_sidebar(); ?>
+    <div class="col-sm-8 col-md-9"><!-- Content Column -->      
+      
+    </div>
+  </div>
+</div><!-- End Container -->
+<!-- Get App Modal -->
+<div class="modal fade" id="getAppModal" tabindex="-1" role="dialog" aria-labelledby="getAppModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Get the App</h4>
+      </div>
+      <div class="modal-body">
+        <p>Please complete the following form and a Socrata representative will contact you to answer any questions and discuss next steps.</p>
+        <?php $meta = get_socrata_apps_meta(); if ($meta[21]) { ?>
+          <script src="//app-abk.marketo.com/js/forms2/js/forms2.js"></script>
+          <form id="mktoForm_1723"></form>
+          <script>MktoForms2.loadForm("//app-abk.marketo.com", "851-SII-641", 1723);</script>
+          <?php
+        } ?> 
       </div>
     </div>
-    
-  </div><!-- .row -->
-</div><!-- .container -->
+  </div>
+</div>
+<!-- Legend Modal -->
+<div class="modal fade getLegendModal" tabindex="-1" role="dialog" aria-labelledby="getLegendModal" aria-hidden="true" id="getLegendModal" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">App Special Features</h4>
+      </div>
+      <div class="modal-body">
+        <div id="legendIcons" class="legendIcons" style="padding-top:30px;">
+          <?php $meta = get_socrata_apps_meta(); if ($meta[16]) echo "<dl class='clearfix'><dt><span class='icon50'>Socrata Certified</span></dt><dd><strong>This is a Socrata Certified App</strong>. </dd></dl>" ; ?>
+          <?php $meta = get_socrata_apps_meta(); if ($meta[19]) echo "<dl class='clearfix'><dt><span class='icon50'>$meta[19]</span></dt><dd><strong>This is a $meta[19]</strong>. </dd></dl>" ; ?>
+          <?php $meta = get_socrata_apps_meta(); if ($meta[18])              
+            foreach ($meta[18] as $string) {
+              echo "<dl class='clearfix'><dt><span class='icon50'>".$string."</span></dt><dd><strong>This is a ".$string."</strong>. </dd></dl>";
+              }; ?>
+        </div>
+        <script>
+          $('#legendIcons span:contains(Web App)').addClass('icon-web');
+          $('#legendIcons dd:contains(Web App)').append('<p>Web apps run in a web browser such as Internet Explorer, Chrome, Firefox, Safari, etc.</p>');
+          $('#legendIcons span:contains(Mobile App)').addClass('icon-mobile');
+          $('#legendIcons dd:contains(Mobile App)').append('<p>Mobile apps run on mobile devices such as smart phones and tablets. Check out which platform this runs on under the Details tab.</p>');
+          $('#legendIcons span:contains(Desktop App)').addClass('icon-desktop');
+          $('#legendIcons dd:contains(Desktop App)').append('<p>Desktop apps are operating system specific. Check out which platform this runs on under the Details tab.</p>');
+          $('#legendIcons span:contains(Socrata Certified)').addClass('icon-certified');
+          $('#legendIcons dd:contains(Socrata Certified)').append('<p>This app uses the Socrata API.</p>');
+          $('#legendIcons span:contains(Free App)').addClass('icon-free');
+          $('#legendIcons dd:contains(Free App)').append('<p>Free Apps are just that, free.</p>');
+          $('#legendIcons span:contains(Paid App)').addClass('icon-paid');
+          $('#legendIcons dd:contains(Paid App)').append('<p>Paid apps will require some form of payment model.</p>');
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(function () {
+    $('#appTabs a:first').tab('show')
+  })
+</script>
 
 <?php get_footer(); ?>

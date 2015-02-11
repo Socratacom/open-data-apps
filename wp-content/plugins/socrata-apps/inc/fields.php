@@ -202,31 +202,38 @@ $fields = array(
 );
 
 // Get and return the values for the URL and description
-function get_socrata_apps_meta() {
-  global $post;
-  $socrata_apps_app_website = get_post_meta($post->ID, 'socrata_apps_app_website', true); // 0
-  $socrata_apps_last_updated = get_post_meta($post->ID, 'socrata_apps_last_updated', true); // 1
-  $socrata_apps_version_number = get_post_meta($post->ID, 'socrata_apps_version_number', true); // 2
-  $socrata_apps_file_size = get_post_meta($post->ID, 'socrata_apps_file_size', true); // 3
-  $socrata_apps_app_icon = get_post_meta($post->ID, 'socrata_apps_app_icon', true); // 4
-  $socrata_apps_splash_image = get_post_meta($post->ID, 'socrata_apps_splash_image', true); // 5 
-  $socrata_apps_screen_shot_one = get_post_meta($post->ID, 'socrata_apps_screen_shot_one', true); // 6
-  $socrata_apps_screen_shot_two = get_post_meta($post->ID, 'socrata_apps_screen_shot_two', true); // 7 
-  $socrata_apps_screen_shot_three = get_post_meta($post->ID, 'socrata_apps_screen_shot_three', true); // 8
-  $socrata_apps_company_name = get_post_meta($post->ID, 'socrata_apps_company_name', true); // 9
-  $socrata_apps_developer_name = get_post_meta($post->ID, 'socrata_apps_developer_name', true); // 10
-  $socrata_apps_company_website = get_post_meta($post->ID, 'socrata_apps_company_website', true); // 11
-  $socrata_apps_developer_website = get_post_meta($post->ID, 'socrata_apps_developer_website', true); // 12
-  $socrata_apps_support_website = get_post_meta($post->ID, 'socrata_apps_support_website', true); // 13
-  $socrata_apps_short_description = get_post_meta($post->ID, 'socrata_apps_short_description', true); // 14
-  $editorField = get_post_meta($post->ID, 'editorField', true); // 15
-  $socrata_apps_certified = get_post_meta($post->ID, 'socrata_apps_certified', true); // 16
-  $socrata_apps_platform = get_post_meta($post->ID, 'socrata_apps_platform', true); // 17
-  $socrata_apps_type = get_post_meta($post->ID, 'socrata_apps_type', true); // 18
-  $socrata_apps_cost = get_post_meta($post->ID, 'socrata_apps_cost', true); // 19  
-  $socrata_apps_schema = get_post_meta($post->ID, 'socrata_apps_schema', true); // 20  
-  $socrata_apps_leadgen = get_post_meta($post->ID, 'socrata_apps_leadgen', true); // 21  
-  $socrata_apps_demo_website = get_post_meta($post->ID, 'socrata_apps_demo_website', true); // 22
+function get_socrata_apps_meta($id = null) {
+
+	if ($id === null) {
+		global $post;
+		$post_ID = $post->ID;
+	} else {
+		$post_ID = $id;
+	}
+  
+  $socrata_apps_app_website = get_post_meta($post_ID, 'socrata_apps_app_website', true); // 0
+  $socrata_apps_last_updated = get_post_meta($post_ID, 'socrata_apps_last_updated', true); // 1
+  $socrata_apps_version_number = get_post_meta($post_ID, 'socrata_apps_version_number', true); // 2
+  $socrata_apps_file_size = get_post_meta($post_ID, 'socrata_apps_file_size', true); // 3
+  $socrata_apps_app_icon = get_post_meta($post_ID, 'socrata_apps_app_icon', true); // 4
+  $socrata_apps_splash_image = get_post_meta($post_ID, 'socrata_apps_splash_image', true); // 5 
+  $socrata_apps_screen_shot_one = get_post_meta($post_ID, 'socrata_apps_screen_shot_one', true); // 6
+  $socrata_apps_screen_shot_two = get_post_meta($post_ID, 'socrata_apps_screen_shot_two', true); // 7 
+  $socrata_apps_screen_shot_three = get_post_meta($post_ID, 'socrata_apps_screen_shot_three', true); // 8
+  $socrata_apps_company_name = get_post_meta($post_ID, 'socrata_apps_company_name', true); // 9
+  $socrata_apps_developer_name = get_post_meta($post_ID, 'socrata_apps_developer_name', true); // 10
+  $socrata_apps_company_website = get_post_meta($post_ID, 'socrata_apps_company_website', true); // 11
+  $socrata_apps_developer_website = get_post_meta($post_ID, 'socrata_apps_developer_website', true); // 12
+  $socrata_apps_support_website = get_post_meta($post_ID, 'socrata_apps_support_website', true); // 13
+  $socrata_apps_short_description = get_post_meta($post_ID, 'socrata_apps_short_description', true); // 14
+  $editorField = get_post_meta($post_ID, 'editorField', true); // 15
+  $socrata_apps_certified = get_post_meta($post_ID, 'socrata_apps_certified', true); // 16
+  $socrata_apps_platform = get_post_meta($post_ID, 'socrata_apps_platform', true); // 17
+  $socrata_apps_type = get_post_meta($post_ID, 'socrata_apps_type', true); // 18
+  $socrata_apps_cost = get_post_meta($post_ID, 'socrata_apps_cost', true); // 19  
+  $socrata_apps_schema = get_post_meta($post_ID, 'socrata_apps_schema', true); // 20  
+  $socrata_apps_leadgen = get_post_meta($post_ID, 'socrata_apps_leadgen', true); // 21  
+  $socrata_apps_demo_website = get_post_meta($post_ID, 'socrata_apps_demo_website', true); // 22
 
   return array(
   $socrata_apps_app_website,

@@ -1,0 +1,51 @@
+---
+layout: default
+title: Image based items
+description: A demo of how NOT to use images with shuffle
+extraJS: [ "demos/images-broken.js"]
+---
+
+<div class="container-fluid">
+  <h2>This probably looks broken.</h2>
+  <p>Demo in which shuffle item dimensions are based on images without a fix. <a href="{{ site.baseurl }}{% post_url demos/2013-05-03-images %}">See here</a> for a solution.</p>
+  <p>Resize the window and it'll fix itself.</p>
+</div>
+
+
+<style>
+  .shuffle--images {
+    position: relative;
+  }
+
+  .shuffle--images .img-item {
+    margin-top: 10px;
+    margin-left: 0;
+  }
+
+  .shuffle--images .img-item img {
+    width: 100%;
+  }
+
+</style>
+
+<div class="container-fluid">
+  <div class="shuffle--images row-fluid">
+    {% for item in site.items %}
+    <figure class="js-item img-item span3 m-span3">
+      <img src="{{ site.baseurl }}/img/{{ item.img }}" alt="{{item.title}}"/>
+      <figcaption>{{ item.groups }}</figcaption>
+    </figure>
+    {% endfor %}
+    <div class="span3 m-span3" id="js-sizer"></div>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <h2>Shuffle.js</h2>
+    <p>{{ site.longDescription }}</p>
+  </div>
+</section>
+
+
+{% include credit-jake.html %}

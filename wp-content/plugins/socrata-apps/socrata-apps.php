@@ -10,9 +10,10 @@ Author URI: http://socrata.com/
 include_once('metaboxes/meta_box.php');
 include_once('inc/fields.php');
 
+// --------------------------------------------------------------------
 // REGISTER POST TYPE
+// --------------------------------------------------------------------
 add_action( 'init', 'create_socrata_apps' );
-
 function create_socrata_apps() {
   register_post_type( 'socrata_apps',
     array(
@@ -43,8 +44,19 @@ function create_socrata_apps() {
   );
 }
 
+function theme_name_scripts() {
+  wp_enqueue_style( 'slick-carousel-css', plugins_url( '/assets/slick/slick.css' , __FILE__ ) );
+  wp_enqueue_style( 'slick-carousel-theme-css', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ) );
+
+  wp_enqueue_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), array(), false, true );
+  
+  // wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/Shuffle-master/css/style.css' , __FILE__ ) );
+  // wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/Shuffle-master/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
+}
+add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
+
 // MENU ICON
-//Using Dashicon Font http://melchoyce.github.io/dashicons/
+// Using Dashicon Font http://melchoyce.github.io/dashicons/
 add_action( 'admin_head', 'add_menu_icons_styles' );
 
 function add_menu_icons_styles(){
@@ -57,9 +69,10 @@ function add_menu_icons_styles(){
 <?php
 }
 
+// --------------------------------------------------------------------
 // REGISTER TAXONOMIES
+// --------------------------------------------------------------------
 add_action( 'init', 'socrata_apps_persona', 0 );
-
 function socrata_apps_persona() {
   register_taxonomy(
     'socrata_apps_persona',
@@ -83,7 +96,6 @@ function socrata_apps_persona() {
 }
 
 add_action( 'init', 'socrata_apps_industry', 0 );
-
 function socrata_apps_industry() {
   register_taxonomy(
     'socrata_apps_industry',
@@ -107,7 +119,6 @@ function socrata_apps_industry() {
 }
 
 add_action( 'init', 'socrata_apps_resources', 0 );
-
 function socrata_apps_resources() {
   register_taxonomy(
     'socrata_apps_resources',
@@ -130,7 +141,9 @@ function socrata_apps_resources() {
   );
 }
 
+// --------------------------------------------------------------------
 // TEMPLATE PATHS
+// --------------------------------------------------------------------
 add_filter( 'template_include', 'socrata_apps_single_template_function', 1 );
 function socrata_apps_single_template_function( $template_path ) {
   if ( get_post_type() == 'socrata_apps' ) {
@@ -140,7 +153,7 @@ function socrata_apps_single_template_function( $template_path ) {
       if ( $theme_file = locate_template( array ( 'single-socrata-apps.php' ) ) ) {
         $template_path = $theme_file;
       } else {
-        $template_path = plugin_dir_path( __FILE__ ) . '/single-socrata-apps.php';
+        $template_path = plugin_dir_path( __FILE__ ) . 'single-socrata-apps.php';
       }
     }
   }
@@ -156,7 +169,23 @@ function socrata_apps_archive_template_function( $template_path ) {
       if ( $theme_file = locate_template( array ( 'archive-socrata-apps.php' ) ) ) {
         $template_path = $theme_file;
       } else {
-        $template_path = plugin_dir_path( __FILE__ ) . '/archive-socrata-apps.php';
+        $template_path = plugin_dir_path( __FILE__ ) . 'archive-socrata-apps.php';
+      }
+    }
+  }
+  return $template_path;
+}
+
+add_filter( 'template_include', 'socrata_apps_category_template_function', 1 );
+function socrata_apps_category_template_function( $template_path ) {
+  if ( get_post_type() == 'socrata_apps' ) {
+    if ( is_tax() ) {
+      // checks if the file exists in the theme first,
+      // otherwise serve the file from the plugin
+      if ( $theme_file = locate_template( array ( 'taxonomy-socrata-apps.php' ) ) ) {
+        $template_path = $theme_file;
+      } else {
+        $template_path = plugin_dir_path( __FILE__ ) . 'taxonomy-socrata-apps.php';
       }
     }
   }
@@ -164,12 +193,133 @@ function socrata_apps_archive_template_function( $template_path ) {
 }
 
 
+function display_app_tile($app) { ?>
+                  
+  <div class="tile tile-md">
+    <div class="tile-image">
+      <a href="<?php the_permalink(); ?>"><?php echo $app->ID; $meta = get_socrata_apps_meta($app->ID); echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?></a>
+    </div>
+    <div class="tile-content">        
+      <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
+      <h3><?php echo $app->post_title; ?></a></h3>
+      <p class=" tile-fade"><?php $meta = get_socrata_apps_meta($app->ID); if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
+      <a href="<?php the_permalink(); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
+      <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
+      <div class="tile-overlay"></div>
+      <a href="<?php the_permalink(); ?>" class="tile-link"></a>
+    </div>
+  </div>
+
+<?php }
+
+function get_apps_tiles_by_term($term) {
+
+  $args = array(
+      'hide_empty' => true,
+      'parent' => 0
+  );
+
+  $terms = get_terms( $term, $args );
+
+  $loaded_apps = array();
+  // $all_loaded_apps = array();
+  
+
+  foreach ( $terms as $term ) {
+
+      $term_loaded_apps = array();
+      $skipped_apps = array();
+      
+      if ($term->count == 0 || $term->slug === 'other') {
+          continue;
+      }
+
+      $args = array(
+          'posts_per_page' => -1,
+          'post_type' => 'socrata_apps',
+          'order_by' => 'modified',
+          'post_status' => 'publish',
+          'tax_query' => array(
+                array(
+                    'taxonomy' => 'socrata_apps_persona',
+                    'field' => 'slug',
+                    'terms' => $term->slug
+                )
+            )
+      );
+      $apps = get_posts( $args );
+
+      echo '<h2 class="title">Apps for ' . $term->name . ' (' . count($apps) . ')</h2>';
+
+      echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 60px; margin-left: 20px; margin-right: 20px">';
+
+      foreach ($apps as $app) {
+
+        if (array_key_exists($app->ID, $loaded_apps)) {
+            $skipped_apps[$app->ID] = $app;
+            continue;
+        }
+
+        echo '<div class="col-xs-4" data-groups=\'["photography"]\'>';
+        echo  display_app_tile($app);
+        echo '</div>';
+
+        $loaded_apps[$app->ID] = $app;
+
+      }
+
+      foreach ($skipped_apps as $app) {
+        echo '<div class="col-xs-4" data-groups=\'["photography"]\'>';
+        echo  display_app_tile($app);
+        echo '</div>';
+
+        $loaded_apps[$app->ID] = $app;
+      }
+
+      echo '</div>';
+
+      foreach ($loaded_apps as $app) {
+        echo $app->ID . ' &nbsp; ';
+      }
+
+      // var_dump($term);
+
+      echo '<script>
+              $(document).ready(function(){
+                $(\'.row.carousel.'. $term->slug .'\').slick({
+                  slidesToShow: 3,
+                  slidesToScroll: 3
+                });
+              });
+            </script>';
+
+        // echo 'all loaded apps: ';
+        // foreach ($all_loaded_apps as $app) {
+        // echo $app->ID . '  ';
+        // }
+
+        // echo '<br>';
+
+        // echo 'skipped apps: ';
+        // foreach ($skipped_apps as $app) {
+        // echo $app->ID . '  ';
+        // }
+
+        // echo '<br>';
+        // echo 'term_loaded_apps: ';
+        // foreach ($term_loaded_apps as $app) {
+        // echo $app->ID . '  ';
+        // }
+
+  }
+
+}
 
 
-
-
+// --------------------------------------------------------------------
 // SHORTCODE TO DISPLAY Apps GROUP
 // [socrata_apps]
+// --------------------------------------------------------------------
 /*
 add_shortcode('socrata_apps','socrata_apps_shortcode');
 function socrata_apps_shortcode( $atts ) {

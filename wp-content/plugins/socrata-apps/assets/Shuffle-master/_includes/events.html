@@ -1,0 +1,24 @@
+<h2>Events<a href="#events"></a></h2>
+<p>A list of events shuffle triggers:</p>
+<ul class="breathable-list">
+  <li><code class="language-javascript">'loading.shuffle'</code></li>
+  <li><code class="language-javascript">'done.shuffle'</code></li>
+  <li><code class="language-javascript">'layout.shuffle'</code></li>
+  <li><code class="language-javascript">'removed.shuffle'</code></li>
+</ul>
+
+<h3>Get notified when shuffle is done with setup</h3>
+<pre rel="JavaScript"><code class="language-javascript">$grid.on('done.shuffle', function() {
+  console.log('Finished initializing shuffle!');
+});
+
+// Initialize shuffle
+$grid.shuffle( options );</code></pre>
+
+
+<h3>Do something when an item is removed</h3>
+<pre rel="JavaScript"><code class="language-javascript">$grid.on('removed.shuffle', function( evt, $collection, shuffle ) {
+  console.log( this, evt, $collection, shuffle );
+});</code></pre>
+
+<p class="demo-link-container">Check out the <a href="#demo">demo</a> at the top of the page, or its <a href="/js/demos/homepage.js">JavaScript file.</a></p>

@@ -1,0 +1,34 @@
+---
+layout: default
+title: Basic Shuffle Demo
+description: A basic demo using shuffle with a masonry layout. This example also uses a sizer element.
+image: /demos/basic.jpg
+bodyClass: basic
+extraJS: [ "demos/homepage.js" ]
+---
+<div class="container-fluid">
+  <div class="row-fluid">
+    <h2>Masonry with a sizer</h2>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div id="grid" class="row-fluid m-row shuffle--container shuffle--fluid">
+    {% for item in site.items %}
+        {% assign item = item %}
+        {% include picture-item.html %}
+    {% endfor %}
+    <div class="span3 m-span3 shuffle__sizer"></div>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <h2>Shuffle.js</h2>
+    <p>{{ site.longDescription }}</p>
+  </div>
+</div>
+
+{% include credit-jake.html %}

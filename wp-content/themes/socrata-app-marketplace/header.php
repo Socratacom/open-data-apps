@@ -31,12 +31,7 @@ $wp_google_tag_manager->output_manual();
               <nav class="gn-menu-wrapper">
                 <div class="gn-scroller">
                   <ul class="gn-menu">                  
-                    <li><h5>Apps for...</h5></li>              
-                    <li class="persona"><?php wp_nav_menu( array( 
-                          'theme_location' => 'persona',
-                          'depth' => -1,
-                          )); ?></li>
-                    <li><h5>Industry/Vertical</h5></li>              
+                    <li><h5>Apps</h5></li>
                     <li><?php wp_nav_menu( array( 
                           'theme_location' => 'industry',
                           'depth' => -1,
@@ -46,11 +41,13 @@ $wp_google_tag_manager->output_manual();
               </nav>
             </li>
           </ul> 
+          <a style="margin-top: 13px; padding:8px 40px; float:right;" href="/apps/submit-app/" class="btn btn-primary btn-sm" role="button">Submit Your App</a>
         </div><!-- /.navbar-header -->   
       </div> 
     </div>
   </nav>
 </header>
+
 <div id="page">
 <!-- Cookiebar Notification -->
 <script type="text/javascript">
@@ -68,3 +65,43 @@ $wp_google_tag_manager->output_manual();
       </div>
     </div>
   </div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <div style="margin-bottom: 30px">
+        <input type="text" placeholder="search" value="" style="border-radius: 5px; border: 1px solid #ccc; padding: 8px 12px; width: 100%; opacity: .5">
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div style="background: #e9e9e9; margin-bottom: 30px; height: 38px; line-height: 38px; padding:0 10px; border-radius: 5px">
+        <div style="float: right">
+
+          <label style="display:inline-block; margin: 0 10px"><input type="checkbox"> Free</label>
+
+          <label style="display:inline-block; margin: 0 10px"><input type="checkbox"> Socrata Certified</label>
+          
+          <select id="example-getting-started" style="display:inline-block; margin: 0 0 0 10px">
+            <option value="cheese">Device</option>
+            <option value="tomatoes">Tomatoes</option>
+            <option value="mozarella">Mozzarella</option>
+            <option value="mushrooms">Mushrooms</option>
+            <option value="pepperoni">Pepperoni</option>
+            <option value="onions">Onions</option>
+          </select>
+
+          <select id="example-getting-started" style="display:inline-block; margin: 0 0 0 10px">
+            <option value="cheese">Platform</option>
+            <option value="tomatoes">Tomatoes</option>
+            <option value="mozarella">Mozzarella</option>
+            <option value="mushrooms">Mushrooms</option>
+            <option value="pepperoni">Pepperoni</option>
+            <option value="onions">Onions</option>
+          </select>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+{
+  "name": "Shuffle",
+  "version": "3.0.2",
+  "description": "Categorize, sort, and filter a responsive grid of items",
+  "keywords": [
+    "jquery-plugin",
+    "gallery",
+    "shuffle",
+    "layout",
+    "masonry",
+    "filter",
+    "sort",
+    "responsive",
+    "grid",
+    "mobile",
+    "tiles"
+  ],
+  "main": "dist/jquery.shuffle.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Vestride/Shuffle.git"
+  },
+  "author": "Glen Cheney <cheney.glen@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vestride/Shuffle/issues"
+  },
+  "homepage": "https://github.com/Vestride/Shuffle",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-autoprefixer": "^2.0.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jasmine": "^0.7.0",
+    "grunt-contrib-sass": "^0.8.1",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-shell": "^1.0.1",
+    "load-grunt-tasks": "^0.6.0"
+  }
+}
