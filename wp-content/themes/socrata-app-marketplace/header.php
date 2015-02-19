@@ -49,19 +49,4 @@ $wp_google_tag_manager->output_manual();
 </header>
 
 <div id="page">
-<!-- Cookiebar Notification -->
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('.cookie-message').cookieBar({ closeButton : '.my-close-button' });
-  });
-</script>
-  <div class="cookie-message hidden-xs hidden-sm">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <p><strong>Civic App Developers</strong>, we want your app. <a href="/apps/submit-app/">Submit Your App Here</a>.</p>
-          <a class="my-close-button"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-    </div>
-  </div>
+

@@ -36,7 +36,7 @@ function create_socrata_apps() {
       'public' => true,
       'menu_position' => 5,
       'supports' => array( 'title', 'revisions', 'comments' ),
-      'taxonomies' => array( '' ),
+      'taxonomies' => array( 'socrata_apps_persona', 'socrata_apps_industry', 'socrata_apps_resources' ),
       'menu_icon' => '',
       'has_archive' => true,
       'rewrite' => array('with_front' => false, 'slug' => 'catalog')
@@ -52,17 +52,18 @@ function plugin_scripts() {
   wp_enqueue_style( 'slick-carousel-theme', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'slick-carousel-theme' );
 
-  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array('custom-css', 'slick-carousel'), false, 'all' );
+  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'socrata-apps' );
 
-  wp_enqueue_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), array(), false, true );
+  wp_register_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), false, null, true );
+  wp_enqueue_script( 'slick-carousel-js' );
   
-  wp_enqueue_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), array(), false, true );
-  
+  wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
+  wp_enqueue_script( 'readmore-js' );
 
-  // wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/Shuffle-master/css/style.css' , __FILE__ ) );
-  // wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/Shuffle-master/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
-
+  wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/shuffle/css/style.css' , __FILE__ ) );
+  wp_enqueue_script( 'custom-modernizer-js', plugins_url( '/assets/shuffle/dist/modernizr.custom.min.js' , __FILE__ ), array(), false, true );
+  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
 }
 add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
 
@@ -204,20 +205,26 @@ function socrata_apps_category_template_function( $template_path ) {
 }
 
 
-function display_app_tile($app) { ?>
+function display_app_tile($app, $term) { 
+
+  $meta = get_socrata_apps_meta($app->ID); 
+
+  $size = $meta[23] === 'yes' && $term === 'featured' ? 'tile-lg' : 'tile-md';
+
+  ?>
                   
-  <div class="tile tile-md">
+  <div class="tile <?php echo $size; ?>">
     <div class="tile-image">
       <a href="<?php echo get_permalink($app->ID); ?>">
-        <?php $meta = get_socrata_apps_meta($app->ID); echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
+        <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
       </a>
     </div>
     <div class="tile-content">        
-      <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
+      <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
       <h3><?php echo $app->post_title; ?></a></h3>
-      <p class=" tile-fade"><?php $meta = get_socrata_apps_meta($app->ID); if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
+      <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
       <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
-      <?php $meta = get_socrata_apps_meta($app->ID); if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
+      <?php if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
       <div class="tile-overlay"></div>
       <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
     </div>
@@ -232,15 +239,29 @@ function get_apps_tiles_by_term($term) {
       'parent' => 0
   );
 
+  $loaded_apps = array();
+
   $terms = get_terms( $term, $args );
 
-  $loaded_apps = array();
+  if (!is_array($terms)) {
+    return;
+  }
+
+  // Move the featured term to the front of the terms array
+  for ($i = 0; $i < count($terms); $i++) {
+    if (isset($terms[$i]->slug) && $terms[$i]->slug === 'featured') {
+      $featured_term_position = $i;
+    }
+  }
+  $featured_term_object = array_slice($terms, $featured_term_position, 1);
+  unset($terms[$featured_term_position]);
+  array_unshift($terms, $featured_term_object[0]);
 
   foreach ( $terms as $term ) {
 
       $term_loaded_apps = array();
       $skipped_apps = array();
-      
+
       if ($term->count == 0 || $term->slug === 'other') {
           continue;
       }
@@ -260,9 +281,13 @@ function get_apps_tiles_by_term($term) {
       );
       $apps = get_posts( $args );
 
-      echo '<h2 class="title">Apps for ' . $term->name . '</h2>';
+      $title = $term->slug === 'featured' ? 'Featured Apps' : 'Apps for ' . $term->name;
 
-      echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 60px; margin-left: 20px; margin-right: 20px">';
+      echo '<h2 style="display: inline-block" class="title">'. $title .'</h2>';
+
+      echo '<div class="'. $term->slug .'-arrows" style="position:relative; display: inline-block; top:-8px; left: 40px;"></div>';
+
+      echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
 
       foreach ($apps as $app) {
 
@@ -271,36 +296,67 @@ function get_apps_tiles_by_term($term) {
             continue;
         }
 
-        echo '<div class="col-xs-4" data-groups=\'["photography"]\'>';
-        echo  display_app_tile($app);
-        echo '</div>';
+        $post_meta = get_post_meta( $app->ID );
+
+        // $meta = get_socrata_apps_meta($app->ID);
+        // $data_groups_array = array();
+
+        // // var_dump($app);
+        // // var_dump($meta[19]);
+
+        // if ($meta[19] !== 'Paid App') {
+        //   $data_groups_array[] = 'free';  
+        // }
+
+        // for ($i = 0; $i < count($data_groups_array); $i++) {
+        //   $data_groups .= $data_groups_array[$i] . ( $i < ( count($data_groups) - 1 ) ? ', ' : '' );
+        // }
+
+        if ($post_meta['_featured'][0] === 'yes' && $term->slug === 'featured') {
+          echo '<div class="shuffle col-xs-8" data-groups="free">';
+          echo  display_app_tile($app, $term->slug);
+          echo '</div>';          
+        } else {
+          echo '<div class="shuffle col-xs-4" data-groups="free">';
+          echo  display_app_tile($app, $term->slug);
+          echo '</div>';  
+        }
 
         $loaded_apps[$app->ID] = $app;
 
       }
 
       foreach ($skipped_apps as $app) {
-        echo '<div class="col-xs-4" data-groups=\'["photography"]\'>';
-        echo  display_app_tile($app);
+        echo '<div class="shuffle col-xs-4" data-groups="">';
+        echo  display_app_tile($app, $term->slug);
         echo '</div>';
 
         $loaded_apps[$app->ID] = $app;
+
       }
 
       echo '</div>';
 
+      if ($term->slug !== 'featured') {
       echo '<script>
               $(document).ready(function(){
                 $(\'.row.carousel.'. $term->slug .'\').slick({
                   slidesToShow: 3,
-                  slidesToScroll: 3
+                  slidesToScroll: 3,
+                  appendArrows: \'.'. $term->slug .'-arrows\'
                 });
               });
-            </script>';
-
+            </script>';  
+      }
+      
   }
 
 }
+
+function display_filter_bar($post_ID) {
+   include('filter-bar.php');
+}
+add_action( 'above_primary_content', 'display_filter_bar' );
 
 
 // --------------------------------------------------------------------

@@ -234,6 +234,7 @@ function get_socrata_apps_meta($id = null) {
   $socrata_apps_schema = get_post_meta($post_ID, 'socrata_apps_schema', true); // 20  
   $socrata_apps_leadgen = get_post_meta($post_ID, 'socrata_apps_leadgen', true); // 21  
   $socrata_apps_demo_website = get_post_meta($post_ID, 'socrata_apps_demo_website', true); // 22
+  $socrata_apps_is_featured = get_post_meta($post_ID, '_featured', true); // 23
 
   return array(
   $socrata_apps_app_website,
@@ -258,7 +259,8 @@ function get_socrata_apps_meta($id = null) {
   $socrata_apps_cost,
   $socrata_apps_schema,
   $socrata_apps_leadgen,
-  $socrata_apps_demo_website
+  $socrata_apps_demo_website,
+  $socrata_apps_is_featured
   );
 }
 
@@ -271,5 +273,4 @@ function get_socrata_apps_meta($id = null) {
  * var $js bool including javascript or not
  */
 $socrata_apps_box = new socrata_apps_custom_add_meta_box( 'socrata_apps_box', 'APP SPECIFICATIONS', $fields, 'socrata_apps', true );
-
 

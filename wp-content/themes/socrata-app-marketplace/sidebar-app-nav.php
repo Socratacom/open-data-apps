@@ -1,5 +1,5 @@
 <div style="margin-bottom: 30px">
-	<input class="field-search-icon" type="text" placeholder="search" value="">
+	 <?php get_search_form(true); ?> 
 </div>
 <div class="app-nav">
 	<h2 class="title">Categories</h2>
