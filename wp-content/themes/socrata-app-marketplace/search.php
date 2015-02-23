@@ -59,6 +59,11 @@ get_header(); ?>
                 </div>
                 <?php endwhile; ?>
               </div>
+              <?php else :?>
+                <div class="col-xs-12">
+                  We didn't find any apps that match your search.<br>
+                  Please use a different term or explore the categories to the left.
+                </div>
               <?php endif;?>
             </div><!-- #content -->
         </div>    

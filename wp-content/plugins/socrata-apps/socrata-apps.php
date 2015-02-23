@@ -205,28 +205,31 @@ function socrata_apps_category_template_function( $template_path ) {
 }
 
 
+// --------------------------------------------------------------------
+// FUNCTIONS FOR DISPLAYING APPS
+// --------------------------------------------------------------------
 function display_app_tile($app, $term) { 
 
-  $meta = get_socrata_apps_meta($app->ID); 
-
+  $meta = get_socrata_apps_meta($app->ID);
   $size = $meta[23] === 'yes' && $term === 'featured' ? 'tile-lg' : 'tile-md';
 
   ?>
-                  
-  <div class="tile <?php echo $size; ?>">
-    <div class="tile-image">
-      <a href="<?php echo get_permalink($app->ID); ?>">
-        <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
-      </a>
-    </div>
-    <div class="tile-content">        
-      <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
-      <h3><?php echo $app->post_title; ?></a></h3>
-      <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
-      <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
-      <?php if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
-      <div class="tile-overlay"></div>
-      <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
+  <div class="shuffle col-xs-12 <?php if ($meta[23] === 'yes' && $term === 'featured') { echo 'col-md-8'; } else { echo 'col-md-4'; } ?>">
+    <div class="tile <?php echo $size; ?>">
+      <div class="tile-image">
+        <a href="<?php echo get_permalink($app->ID); ?>">
+          <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
+        </a>
+      </div>
+      <div class="tile-content">        
+        <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
+        <h3><?php echo $app->post_title; ?></a></h3>
+        <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
+        <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
+        <?php if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
+        <div class="tile-overlay"></div>
+        <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
+      </div>
     </div>
   </div>
 
@@ -247,15 +250,11 @@ function get_apps_tiles_by_term($term) {
     return;
   }
 
-  // Move the featured term to the front of the terms array
-  for ($i = 0; $i < count($terms); $i++) {
-    if (isset($terms[$i]->slug) && $terms[$i]->slug === 'featured') {
-      $featured_term_position = $i;
-    }
-  }
-  $featured_term_object = array_slice($terms, $featured_term_position, 1);
-  unset($terms[$featured_term_position]);
-  array_unshift($terms, $featured_term_object[0]);
+  usort($terms, function($a, $b) {
+    $a = get_field('order_id', $a);
+    $b = get_field('order_id', $b);
+    return $a - $b;
+  });
 
   foreach ( $terms as $term ) {
 
@@ -296,43 +295,13 @@ function get_apps_tiles_by_term($term) {
             continue;
         }
 
-        $post_meta = get_post_meta( $app->ID );
-
-        // $meta = get_socrata_apps_meta($app->ID);
-        // $data_groups_array = array();
-
-        // // var_dump($app);
-        // // var_dump($meta[19]);
-
-        // if ($meta[19] !== 'Paid App') {
-        //   $data_groups_array[] = 'free';  
-        // }
-
-        // for ($i = 0; $i < count($data_groups_array); $i++) {
-        //   $data_groups .= $data_groups_array[$i] . ( $i < ( count($data_groups) - 1 ) ? ', ' : '' );
-        // }
-
-        if ($post_meta['_featured'][0] === 'yes' && $term->slug === 'featured') {
-          echo '<div class="shuffle col-xs-8" data-groups="free">';
-          echo  display_app_tile($app, $term->slug);
-          echo '</div>';          
-        } else {
-          echo '<div class="shuffle col-xs-4" data-groups="free">';
-          echo  display_app_tile($app, $term->slug);
-          echo '</div>';  
-        }
-
+        echo display_app_tile($app, $term->slug);
         $loaded_apps[$app->ID] = $app;
-
       }
 
       foreach ($skipped_apps as $app) {
-        echo '<div class="shuffle col-xs-4" data-groups="">';
-        echo  display_app_tile($app, $term->slug);
-        echo '</div>';
-
+        echo display_app_tile($app, $term->slug);
         $loaded_apps[$app->ID] = $app;
-
       }
 
       echo '</div>';
@@ -343,7 +312,30 @@ function get_apps_tiles_by_term($term) {
                 $(\'.row.carousel.'. $term->slug .'\').slick({
                   slidesToShow: 3,
                   slidesToScroll: 3,
-                  appendArrows: \'.'. $term->slug .'-arrows\'
+                  appendArrows: \'.'. $term->slug .'-arrows\',
+                  responsive: [
+                      {
+                        breakpoint: 1024,
+                        settings: {
+                          slidesToShow: 3,
+                          slidesToScroll: 3
+                        }
+                      },
+                      {
+                        breakpoint: 600,
+                        settings: {
+                          slidesToShow: 2,
+                          slidesToScroll: 2
+                        }
+                      },
+                      {
+                        breakpoint: 480,
+                        settings: {
+                          slidesToShow: 1,
+                          slidesToScroll: 1
+                        }
+                      }
+                  ]
                 });
               });
             </script>';  
@@ -353,61 +345,11 @@ function get_apps_tiles_by_term($term) {
 
 }
 
+
+// --------------------------------------------------------------------
+// FUNCTION FOR DISPLAYING THE FILTER BAR
+// --------------------------------------------------------------------
 function display_filter_bar($post_ID) {
    include('filter-bar.php');
 }
 add_action( 'above_primary_content', 'display_filter_bar' );
-
-
-// --------------------------------------------------------------------
-// SHORTCODE TO DISPLAY Apps GROUP
-// [socrata_apps]
-// --------------------------------------------------------------------
-/*
-add_shortcode('socrata_apps','socrata_apps_shortcode');
-function socrata_apps_shortcode( $atts ) {
-  ob_start();
-  extract( shortcode_atts( array (
-    'type' => 'socrata_apps',
-    'order' => 'date',
-    'orderby' => 'desc',
-    'posts' => 1,
-  ), $atts ) );
-  $options = array(
-    'post_type' => $type,
-    'order' => $order,
-    'orderby' => $orderby,
-    'posts_per_page' => $posts,
-  );
-  $query = new WP_Query( $options );
-  if ( $query->have_posts() ) { ?>
-  <?php while ( $query->have_posts() ) : $query->the_post(); ?>
-  <?php if(has_post_thumbnail()) :?>
-  <?php $thumb = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), ''); $url = $thumb['0']; ?>
-  <?php endif;?>
-  <div class="socrata_apps-image format_text" style="background-image:url(<?=$url?>);">    
-    <div class="socrata_apps-wrapper clearfix">
-      <div class="fade <?php $meta = get_socrata_apps_meta(); if ($meta[6]) echo "$meta[6]"; ?> <?php $meta = get_socrata_apps_meta(); if ($meta[2]) echo "$meta[2]"; ?>">
-        <?php $meta = get_socrata_apps_meta(); if ($meta[0]) echo "<h1>$meta[0]</h1>"; ?>
-        <?php $meta = get_socrata_apps_meta(); if ($meta[1]) echo "<h2>$meta[1]</h2>"; ?>
-        <?php $meta = get_socrata_apps_meta(); if ($meta[3]) echo "<a href='$meta[4]' target='$meta[5]' class='button' style='border:#fff solid 2px; font-weight:300;'>$meta[3]</a>"; ?>
-      </div>
-    </div>    
-  </div>
-  <div class="what-is-socrata format_text mobile-hide">
-    <div class="what-is-socrata-wrapper">
-      <table>
-        <tr>
-          <td>Who is Socrata?</td>
-          <td>Socrata's open data and open performance platform have transformed how data is discovered, analyzed, and shared online. We work everyday to unleash the power of data to improve the world.</td>
-          <td><a href="/unleash-the-power-of-open-data/" class="button" style="font-weight: 300;">Watch the Video <span class="ss-icon">right</span></a></td>
-        </tr>
-      </table>
-    </div>
-  </div>
-  <?php endwhile; wp_reset_postdata(); ?>
-  <?php $myvariable = ob_get_clean();
-  return $myvariable;
-  } 
-}
-*/

@@ -544,7 +544,38 @@ ul.tile-certified {
 }
 
 @media screen and (max-width: 600px) {
-	 .tile-md .tile-content, .tile-md .tile-link, .tile-lg .tile-content, .tile-lg .tile-link {
+	.tile-lg {
+		height: 250px;
+	}
+	.tile-lg p {
+		font-size: 12px;
+	}
+	.tile-lg .tile-content {
+		padding: 15px;
+	}
+	.tile-lg .tile-btn {
+		left: 15px;
+		bottom: 15px;
+	}
+	.tile-lg h3 {
+	    font-size: 18px;
+	    overflow-x: hidden;
+	    padding-right: 65px;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    width: auto;
+	    height: auto;
+	    margin: 10px 0 15px;
+	}
+	.tile-lg .tile-icon {
+	    position: absolute;
+	    right: 15px;
+	    top: 15px;
+	    height: 50px;
+	    width: 50px;
+	    z-index: 20;
+	}
+	.tile-md .tile-content, .tile-md .tile-link, .tile-lg .tile-content, .tile-lg .tile-link {
 		top:0;
 	}
 	.tile-md {
@@ -564,6 +595,15 @@ ul.tile-certified {
 	}
 	.tile .tile-fade {
 		opacity: 1;
+	}
+
+	.tile-md h3 {
+		font-size: 18px;
+		overflow-x: hidden;
+		width: auto;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		padding-right: 65px;
 	}
 }
 
