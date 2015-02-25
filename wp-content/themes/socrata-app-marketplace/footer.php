@@ -1,3 +1,4 @@
+<?php if (!is_page('submit-app') && !is_page('app-submission-form')) { ?>
 <div class="container visible-xs visible-sm">
     <div class="row">
         <div class="col-xs-12">
@@ -5,6 +6,7 @@
         </div>
     </div>
 </div>
+<?php } ?>
 
 </div>
 <footer>

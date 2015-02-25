@@ -1961,6 +1961,15 @@ div.gf_page_steps + div.validation_error {
 
 
 @media(max-width: 767px) {
+
+	.gform_wrapper .gform_body {
+		width:100%;
+	}
+
+	.gform_wrapper .gf_page_steps {
+		display: none
+	}
+
 	.slick-next {
 		right: -75px;
 	}
