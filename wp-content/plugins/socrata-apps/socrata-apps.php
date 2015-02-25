@@ -61,9 +61,8 @@ function plugin_scripts() {
   wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'readmore-js' );
 
-  wp_enqueue_style( 'shuffle-css', plugins_url( '/assets/shuffle/css/style.css' , __FILE__ ) );
-  wp_enqueue_script( 'custom-modernizer-js', plugins_url( '/assets/shuffle/dist/modernizr.custom.min.js' , __FILE__ ), array(), false, true );
-  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/dist/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
+  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
+
 }
 add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
 
@@ -214,8 +213,8 @@ function display_app_tile($app, $term) {
   $size = $meta[23] === 'yes' && $term === 'featured' ? 'tile-lg' : 'tile-md';
 
   ?>
-  <div class="shuffle col-xs-12 <?php if ($meta[23] === 'yes' && $term === 'featured') { echo 'col-md-8'; } else { echo 'col-md-4'; } ?>">
-    <div class="tile <?php echo $size; ?>">
+  <div class="shuffle col-xs-12 <?php if ($meta[23] === 'yes' && $term === 'featured') { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?>">
+    <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
         <a href="<?php echo get_permalink($app->ID); ?>">
           <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>

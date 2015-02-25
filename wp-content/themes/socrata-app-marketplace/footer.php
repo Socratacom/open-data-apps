@@ -1,3 +1,11 @@
+<div class="container visible-xs visible-sm">
+    <div class="row">
+        <div class="col-xs-12">
+            <a style="margin: 50px 0 -50px; padding:8px 40px;" href="/apps/submit-app/" class="visible-xs btn btn-block btn-primary btn-lg" role="button">Submit Your App</a>
+        </div>
+    </div>
+</div>
+
 </div>
 <footer>
   <div class="container">
