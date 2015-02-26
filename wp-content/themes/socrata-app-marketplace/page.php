@@ -2,9 +2,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-4 col-md-3 hidden-xs"><!-- Left Nav -->
-      <?php get_template_part( 'sidebar-app-nav' ); ?>
-    </div>
+    <?php get_template_part( 'sidebar-app-nav' ); ?>
     <div class="col-sm-8 col-md-9"><!-- Content Column -->
       <?php if (have_posts()); ?>
       <?php while ( have_posts() ) : the_post(); ?>
