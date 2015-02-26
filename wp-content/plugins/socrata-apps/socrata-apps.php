@@ -159,13 +159,7 @@ add_filter( 'template_include', 'socrata_apps_single_template_function', 1 );
 function socrata_apps_single_template_function( $template_path ) {
   if ( get_post_type() == 'socrata_apps' ) {
     if ( is_single() ) {
-      // checks if the file exists in the theme first,
-      // otherwise serve the file from the plugin
-      if ( $theme_file = locate_template( array ( 'single-socrata-apps.php' ) ) ) {
-        $template_path = $theme_file;
-      } else {
-        $template_path = plugin_dir_path( __FILE__ ) . 'single-socrata-apps.php';
-      }
+      $template_path = plugin_dir_path( __FILE__ ) . 'single-socrata-apps.php';
     }
   }
   return $template_path;
