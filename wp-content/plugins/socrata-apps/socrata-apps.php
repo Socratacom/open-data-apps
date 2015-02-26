@@ -171,23 +171,11 @@ function socrata_apps_single_template_function( $template_path ) {
   return $template_path;
 }
 
-var_dump('00');
 add_filter( 'template_include', 'socrata_apps_archive_template_function', 1 );
 function socrata_apps_archive_template_function( $template_path ) {
-  var_dump('AA');
   if ( is_front_page() || get_post_type() == 'socrata_apps' ) {
-    var_dump('BB');
     if ( is_front_page() || is_archive() ) {
-      var_dump('CC');
-      // checks if the file exists in the theme first,
-      // otherwise serve the file from the plugin
-      if ( $theme_file = locate_template( array ( 'archive-socrata-apps.php' ) ) ) {
-        var_dump('DD');
-        $template_path = $theme_file;
-      } else {
-        var_dump('EE');
-        $template_path = plugin_dir_path( __FILE__ ) . 'archive-socrata-apps.php';
-      }
+      $template_path = plugin_dir_path( __FILE__ ) . 'archive-socrata-apps.php';
     }
   }
   return $template_path;
