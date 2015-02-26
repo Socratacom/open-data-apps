@@ -243,7 +243,7 @@ function get_apps_tiles_by_term($term) {
     return;
   }
 
-  usort($terms, function($a, $b) {
+  @usort($terms, function($a, $b) {
     $a = get_field('order_id', $a);
     $b = get_field('order_id', $b);
     return $a - $b;
