@@ -11,7 +11,7 @@
                         <p style="margin-bottom: 20px">For government buyers and consumers the Marketplace <br>organizes and facilitates easy discoverability of engaging applications.</p>
                         <p style="margin-bottom: 5px">Civic App Developers, we want your app.</p>
                         <p style="margin-bottom: 30px;">For civic application developers it provides an ideal vehicle <br>to grow your business.</p>
-                        <a href="/apps/submit-app/" class="btn btn-outline">Submit your app</a>
+                        <a href="/submit-app/" class="btn btn-outline">Submit your app</a>
                     </div>
                 </div>
             </div>
