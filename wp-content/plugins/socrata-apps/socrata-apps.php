@@ -173,8 +173,8 @@ function socrata_apps_single_template_function( $template_path ) {
 
 add_filter( 'template_include', 'socrata_apps_archive_template_function', 1 );
 function socrata_apps_archive_template_function( $template_path ) {
-  if ( get_post_type() == 'socrata_apps' || is_front_page() ) {
-    if ( is_archive() || is_front_page() ) {
+  if ( is_front_page() || get_post_type() == 'socrata_apps' ) {
+    if ( is_front_page() || is_archive() ) {
       // checks if the file exists in the theme first,
       // otherwise serve the file from the plugin
       if ( $theme_file = locate_template( array ( 'archive-socrata-apps.php' ) ) ) {
