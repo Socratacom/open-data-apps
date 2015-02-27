@@ -1,3 +1,13 @@
+<?php if (!is_page('submit-app') && !is_page('app-submission-form')) { ?>
+<div class="container visible-xs visible-sm">
+    <div class="row">
+        <div class="col-xs-12">
+            <a style="margin: 50px 0 -50px; padding:8px 40px;" href="/submit-app/" class="visible-xs btn btn-block btn-primary btn-lg" role="button">Submit Your App</a>
+        </div>
+    </div>
+</div>
+<?php } ?>
+
 </div>
 <footer>
   <div class="container">
@@ -9,7 +19,7 @@
           <li><a href="http://www.socrata.com/terms-of-service/">Terms of Service</a></li>
           <li><a href="http://www.socrata.com/privacy/">Privacy Policy</a></li>
           <li><a href="http://socrata.com">socrata.com</a></li>
-          <!--<li><a href="/apps/contact-us">Contact Us</a></li>-->
+          <!--<li><a href="/contact-us">Contact Us</a></li>-->
       </ul>
       </div>
     </div>
