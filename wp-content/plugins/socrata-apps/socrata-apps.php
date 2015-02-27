@@ -152,6 +152,29 @@ function socrata_apps_resources() {
   );
 }
 
+add_action( 'init', 'socrata_apps_homepage_carousels', 0 );
+function socrata_apps_homepage_carousels() {
+  register_taxonomy(
+    'socrata_apps_homepage_carousels',
+    'socrata_apps',
+    array(
+      'labels' => array(
+        'name' => 'Home Page Carousels',
+        'menu_name' => 'Home Page Carousels',
+        'add_new_item' => 'Add New',
+        'new_item_name' => "New Carousel"
+      ),
+      'show_ui' => true,
+      'show_tagcloud' => false,
+      'hierarchical' => true,
+      'sort' => true,      
+      'args' => array( 'orderby' => 'term_order' ),
+      'show_admin_column' => true,
+      'rewrite' => array('with_front' => false, 'slug' => 'homepage_carousels')
+    )
+  );
+}
+
 // --------------------------------------------------------------------
 // TEMPLATE PATHS
 // --------------------------------------------------------------------
@@ -248,10 +271,6 @@ function get_apps_tiles_by_term($term) {
       $term_loaded_apps = array();
       $skipped_apps = array();
 
-      if ($term->count == 0 || $term->slug === 'other') {
-          continue;
-      }
-
       $args = array(
           'posts_per_page' => -1,
           'post_type' => 'socrata_apps',
@@ -259,13 +278,17 @@ function get_apps_tiles_by_term($term) {
           'post_status' => 'publish',
           'tax_query' => array(
                 array(
-                    'taxonomy' => 'socrata_apps_persona',
+                    'taxonomy' => 'socrata_apps_homepage_carousels',
                     'field' => 'slug',
                     'terms' => $term->slug
                 )
             )
       );
       $apps = get_posts( $args );
+
+      if ($term->count == 0 || $term->slug === 'other' || count($apps) === 0) {
+          continue;
+      }
 
       $title = $term->slug === 'featured' ? 'Featured Apps' : 'Apps for ' . $term->name;
 
