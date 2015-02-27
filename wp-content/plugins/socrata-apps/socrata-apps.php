@@ -152,29 +152,6 @@ function socrata_apps_resources() {
   );
 }
 
-add_action( 'init', 'socrata_apps_homepage_carousels', 0 );
-function socrata_apps_homepage_carousels() {
-  register_taxonomy(
-    'socrata_apps_homepage_carousels',
-    'socrata_apps',
-    array(
-      'labels' => array(
-        'name' => 'Home Page Carousels',
-        'menu_name' => 'Home Page Carousels',
-        'add_new_item' => 'Add New',
-        'new_item_name' => "New Carousel"
-      ),
-      'show_ui' => true,
-      'show_tagcloud' => false,
-      'hierarchical' => true,
-      'sort' => true,      
-      'args' => array( 'orderby' => 'term_order' ),
-      'show_admin_column' => true,
-      'rewrite' => array('with_front' => false, 'slug' => 'homepage_carousels')
-    )
-  );
-}
-
 // --------------------------------------------------------------------
 // TEMPLATE PATHS
 // --------------------------------------------------------------------
@@ -228,7 +205,7 @@ function display_app_tile($app, $term) {
     <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
         <a href="<?php echo get_permalink($app->ID); ?>">
-          <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
+          <?php echo wp_get_attachment_image($meta[5], $meta[23] === 'yes' && $term === 'featured' ? 'screen-lg' : 'screen-md', false, array('class' => 'img-responsive')); ?>
         </a>
       </div>
       <div class="tile-content">        
@@ -271,6 +248,10 @@ function get_apps_tiles_by_term($term) {
       $term_loaded_apps = array();
       $skipped_apps = array();
 
+      if ($term->count == 0 || $term->slug === 'other') {
+          continue;
+      }
+
       $args = array(
           'posts_per_page' => -1,
           'post_type' => 'socrata_apps',
@@ -278,7 +259,7 @@ function get_apps_tiles_by_term($term) {
           'post_status' => 'publish',
           'tax_query' => array(
                 array(
-                    'taxonomy' => 'socrata_apps_homepage_carousels',
+                    'taxonomy' => 'socrata_apps_persona',
                     'field' => 'slug',
                     'terms' => $term->slug
                 )
@@ -286,8 +267,16 @@ function get_apps_tiles_by_term($term) {
       );
       $apps = get_posts( $args );
 
-      if ($term->count == 0 || $term->slug === 'other') {
-          continue;
+      if ($term->slug !== 'featured') {
+        @usort($apps, function($a, $b) {
+          $a = get_field('carousel_order', $a) === false ? 100 : intval(get_field('carousel_order', $a));
+          $b = get_field('carousel_order', $b) === false ? 100 : intval(get_field('carousel_order', $b));
+          if ($a < $b || $a == $b) {
+            return 0;
+          } else {
+            return 1;
+          }
+        });
       }
 
       $title = $term->slug === 'featured' ? 'Featured Apps' : 'Apps for ' . $term->name;
@@ -300,19 +289,21 @@ function get_apps_tiles_by_term($term) {
 
       foreach ($apps as $app) {
 
-        if (array_key_exists($app->ID, $loaded_apps)) {
-            $skipped_apps[$app->ID] = $app;
-            continue;
-        }
+        // This block and the one below (block AB1), will force apps that have already been loaded to the end of the array. 
+        // if (array_key_exists($app->ID, $loaded_apps)) {
+        //     $skipped_apps[$app->ID] = $app;
+        //     continue;
+        // }
 
         echo display_app_tile($app, $term->slug);
         $loaded_apps[$app->ID] = $app;
       }
 
-      foreach ($skipped_apps as $app) {
-        echo display_app_tile($app, $term->slug);
-        $loaded_apps[$app->ID] = $app;
-      }
+      // BLOCK AB1
+      // foreach ($skipped_apps as $app) {
+      //   echo display_app_tile($app, $term->slug);
+      //   $loaded_apps[$app->ID] = $app;
+      // }
 
       echo '</div>';
 
