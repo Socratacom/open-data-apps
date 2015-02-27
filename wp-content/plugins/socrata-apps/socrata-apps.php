@@ -286,7 +286,7 @@ function get_apps_tiles_by_term($term) {
       );
       $apps = get_posts( $args );
 
-      if ($term->count == 0 || $term->slug === 'other' || count($apps) === 0) {
+      if ($term->count == 0 || $term->slug === 'other') {
           continue;
       }
 
