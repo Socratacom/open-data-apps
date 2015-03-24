@@ -83,3 +83,155 @@
 	<?php } ?>
 
 </div>
+
+<script>
+
+var Exports = {
+	Modules : {}
+};
+
+Exports.Modules.Gallery = (function($, undefined) {
+
+	var $cost,
+	$certified,
+	$platform,
+
+	cost = [],
+	certified = [],
+	platform = [],
+	device = [],
+
+	init = function() {
+		setVars();
+		initFilters();
+		initShuffle();
+	},
+
+	setVars = function() {
+		$grid = $('.js-shuffle');
+		$cost = $('.js-cost');
+		$certified = $('.js-certified');
+		$platform = $('.js-platform');
+		$device = $('.js-device');
+	},
+
+	initShuffle = function() {
+	    // instantiate the plugin
+	    $grid.shuffle({
+	    	itemSelector: '.shuffle-item',
+	    	columnWidth: 293,
+	      	speed : 250,
+	      	delimeter: ',',
+	        easing : 'cubic-bezier(0.165, 0.840, 0.440, 1.000)' // easeOutQuart
+	    });
+
+		$('.js-cost input, .js-certified input, .js-platform select').change();	    
+
+  	},
+
+ 	initFilters = function() {
+
+		// cost
+		$cost.find('input').on('change', function() {
+			var $checked = $cost.find('input:checked'),
+			groups = [];
+
+			if ($checked.length !== 0) {
+				$checked.each(function() {
+					groups.push(this.value);
+				});
+			}
+			cost = groups;
+
+			filter();
+		});
+
+		// certified
+		$certified.find('input').on('change', function() {
+			var $checked = $certified.find('input:checked'),
+			groups = [];
+
+			if ($checked.length !== 0) {
+				$checked.each(function() {
+					groups.push(this.value);
+				});
+			}
+			certified = groups;
+
+			filter();
+		});
+
+		// platform
+		$platform.find('select').on('change', function() {
+			var $select = $platform.find('select'),
+			groups = [];
+			platform = $select.val();
+			filter();
+		});
+
+		// device
+		$device.find('select').on('change', function() {
+			var $select = $device.find('select'),
+			groups = [];
+			device = $select.val();
+			filter();
+		});
+
+	},
+
+	filter = function() {
+		if ( hasActiveFilters() ) {
+			$grid.shuffle('shuffle', function($el) {
+				return itemPassesFilters( $el.data() );
+			});
+		} else {
+			$grid.shuffle( 'shuffle', 'all' );
+		}
+
+		if ($grid.find('.filtered').length === 0) {
+			$grid.addClass('no-results');
+		} else {
+			$grid.removeClass('no-results');
+		}
+	},
+
+	itemPassesFilters = function(data) {
+
+		if ( cost.length > 0 && !valueInArray(data.cost, cost) ) {
+			return false;
+		}
+
+		if ( certified.length > 0 && !valueInArray(data.certified, certified) ) {
+			return false;
+		}
+
+		if ( platform.length > 0 ) {
+			for (i=0; i < data.platform.length; i++) {
+				if (platform === data.platform[i]) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		return true;
+	},
+
+	hasActiveFilters = function() {
+		return cost.length > 0 || certified.length > 0 || platform.length > 0;
+	},
+
+	valueInArray = function(value, arr) {
+		return $.inArray(value, arr) !== -1;
+	};
+
+	return {
+		init: init
+	};
+
+}(jQuery));
+
+$(document).ready(function() {
+	Exports.Modules.Gallery.init();
+});
+</script>

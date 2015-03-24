@@ -26,13 +26,16 @@
         <?php get_template_part( 'sidebar-app-nav' ); ?>
 
         <div class="col-xs-12 col-sm-8 col-md-9"><!-- App Tiles -->
+            
+            <?php do_action( 'above_primary_content' ); ?>
+
             <div class="row">
                 <div id="content">
                     <div class="col-xs-12">
                         <h2 class="title"><?php single_cat_title('',true); ?></h2>
                     </div>
                     <div id="grid" class="col-xs-12">
-                      <?php get_apps_tiles_by_term('socrata_apps_persona'); ?> 
+                        <?php get_apps_tiles_by_term('socrata_apps_persona'); ?> 
                     </div>
                 </div>
             </div>

@@ -1984,3 +1984,14 @@ div.gf_page_steps + div.validation_error {
 		width: 100%;		
 	}
 }
+
+.no-results {
+	height: auto !important;
+}
+.no-results:after {
+	content: 'No apps found.';
+	font-size: 18px;
+	display: block;
+	color: #666;
+	padding-left: 13px;
+}

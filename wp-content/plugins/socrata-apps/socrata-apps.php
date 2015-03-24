@@ -195,24 +195,55 @@ function socrata_apps_category_template_function( $template_path ) {
 // --------------------------------------------------------------------
 // FUNCTIONS FOR DISPLAYING APPS
 // --------------------------------------------------------------------
-function display_app_tile($app, $term) { 
+function display_app_tile($app, $is_featured) {
 
+  // Get app meta field values
   $meta = get_socrata_apps_meta($app->ID);
-  $size = $meta[23] === 'yes' && $term === 'featured' ? 'tile-lg' : 'tile-md';
+  $size = $meta[23] === 'yes' && $is_featured ? 'tile-lg' : 'tile-md';
+  
+  // setting up data attributes for filtering           
+  $data_cost = '';
+  $data_certified = '';
+  $data_groups_array = array();
+  $data_groups_string = '';
+  $data_platform_array = array();
+  $data_platform_string = '';           
+
+  // Create filter attributes string
+  if ($meta[19] !== 'Paid App') {
+    $data_cost = 'data-cost="free" ';
+  }
+  if ($meta[16] === '1') {
+    $data_certified = 'data-certified="certified" ';
+  }
+  $meta[17][] = 'all';
+  if (isset($meta[17]) && is_array($meta[17])) {
+    for ($i=0; $i < count($meta[17]); $i++) {
+      $data_platform_string .= '"' . str_replace(" ", "-", strtolower($meta[17][$i])) . '"' . ($i === count($meta[17]) - 1 ? '' : ', ');
+    }
+  }
+  $data_platform = "data-platform='[$data_platform_string]'";
+  $filter_attributes = $data_cost . $data_certified . $data_platform;
+
+  // Get terms list
+  $term_list = wp_get_post_terms($post->ID, 'socrata_apps_resources', array("fields" => "names"));
+
+  // Change button label based on whether is an app or template
+  $button_label = count($term_list) > 0 ? 'View Template' : 'View App';
 
   ?>
-  <div class="shuffle col-xs-12 <?php if ($meta[23] === 'yes' && $term === 'featured') { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?>">
+  <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>
     <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
         <a href="<?php echo get_permalink($app->ID); ?>">
-          <?php echo wp_get_attachment_image($meta[5], $meta[23] === 'yes' && $term === 'featured' ? 'screen-lg' : 'screen-md', false, array('class' => 'img-responsive')); ?>
+          <?php echo wp_get_attachment_image($meta[5], $meta[23] === 'yes' && $is_featured ? 'screen-lg' : 'screen-md', false, array('class' => 'img-responsive')); ?>
         </a>
       </div>
       <div class="tile-content">        
         <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
         <h3><?php echo $app->post_title; ?></a></h3>
         <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
-        <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
+        <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade"><?php echo $button_label; ?></a>
         <?php if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
         <div class="tile-overlay"></div>
         <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
@@ -222,7 +253,7 @@ function display_app_tile($app, $term) {
 
 <?php }
 
-function get_apps_tiles_by_term($term) {
+function get_apps_tiles_by_term($taxonomies) {
 
   $args = array(
       'hide_empty' => true,
@@ -231,7 +262,7 @@ function get_apps_tiles_by_term($term) {
 
   $loaded_apps = array();
 
-  $terms = get_terms( $term, $args );
+  $terms = get_terms( $taxonomies, $args );
 
   if (!is_array($terms)) {
     return;
@@ -285,17 +316,18 @@ function get_apps_tiles_by_term($term) {
 
       echo '<div class="'. $term->slug .'-arrows" style="position:relative; display: inline-block; top:-8px; left: 40px;"></div>';
 
-      echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
+      echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
 
       foreach ($apps as $app) {
 
-        // This block and the one below (block AB1), will force apps that have already been loaded to the end of the array. 
+        // This foreach statement and the one below (BLOCK AB1), will force apps that have already been loaded to the end of the array. 
         // if (array_key_exists($app->ID, $loaded_apps)) {
         //     $skipped_apps[$app->ID] = $app;
         //     continue;
         // }
 
-        echo display_app_tile($app, $term->slug);
+        echo display_app_tile($app, ($term->slug === 'featured'));
+
         $loaded_apps[$app->ID] = $app;
       }
 
@@ -307,50 +339,86 @@ function get_apps_tiles_by_term($term) {
 
       echo '</div>';
 
-      if ($term->slug !== 'featured') {
-      echo '<script>
-              $(document).ready(function(){
-                $(\'.row.carousel.'. $term->slug .'\').slick({
-                  slidesToShow: 3,
-                  slidesToScroll: 3,
-                  appendArrows: \'.'. $term->slug .'-arrows\',
-                  responsive: [
-                      {
-                        breakpoint: 1024,
-                        settings: {
-                          slidesToShow: 3,
-                          slidesToScroll: 3
-                        }
-                      },
-                      {
-                        breakpoint: 600,
-                        settings: {
-                          slidesToShow: 2,
-                          slidesToScroll: 2
-                        }
-                      },
-                      {
-                        breakpoint: 480,
-                        settings: {
-                          slidesToShow: 1,
-                          slidesToScroll: 1
-                        }
-                      }
-                  ]
-                });
-              });
-            </script>';  
-      }
-      
-  }
+      if ($term->slug !== 'featured') { ?>
+      <script>
+        $(document).ready(function(){
+          
+          $('.row.carousel.<?php echo $term->slug; ?>').slick({
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            appendArrows: '.<?php echo $term->slug; ?>-arrows',
+            responsive: [
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3
+              }
+            },
+            {
+              breakpoint: 600,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2
+              }
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1
+              }
+            }
+            ]
+          });
 
-}
+        });
+      </script>
+      <?php } ?>
+      
+  <?php } ?>
+
+  <script>
+    $(document).ready(function(){
+
+      $('.js-cost input, .js-certified input, .js-platform select').on('change', function(e) {
+        var costIsChecked = $('.js-cost input').is(':checked');
+        var certifiedIsChecked = $('.js-certified input').is(':checked');
+        var selectedPlatform = $('.js-platform select').val();
+        $('.row.carousel').not('.featured').each(function(index) {
+          var rowCategory = '.row.carousel.' + $(this).attr('data-category');
+          $(rowCategory).slick('slickUnfilter');
+          $(rowCategory).slick('slickFilter', function() {
+            var result = [];
+            if (costIsChecked) {
+              result.push($(this).attr('data-cost') === 'free');
+            }
+            if (certifiedIsChecked) {
+              result.push($(this).attr('data-certified') === 'certified'); 
+            }
+            platformArray = jQuery.parseJSON( $(this).attr('data-platform'));
+            result.push($.inArray(selectedPlatform, platformArray) == '-1' ? false : true);
+            return ($.inArray(false, result) == '-1' ? true : false);
+          });
+          
+          if($(rowCategory).slick('getSlick').slideCount == 0){
+            $(this).addClass('no-results');
+          } else {
+            $(this).removeClass('no-results');
+          }
+        });
+      }).change();
+
+    });
+  </script>
+
+<?php }
 
 
 // --------------------------------------------------------------------
 // FUNCTION FOR DISPLAYING THE FILTER BAR
 // --------------------------------------------------------------------
 function display_filter_bar($post_ID) {
-   include('filter-bar.php');
+  include('filter-bar.php');
 }
-add_action( 'above_primary_content', 'display_filter_bar' );
+add_action('above_primary_content', 'display_filter_bar');
