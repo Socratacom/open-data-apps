@@ -19,7 +19,7 @@ function create_socrata_apps() {
     array(
       'labels' => array(
         'name' => 'Apps',
-        'singular_name' => 'Apps',        
+        'singular_name' => 'Apps',
         'menu_name' => 'Apps',
         'add_new' => 'Add New App',
         'add_new_item' => 'Add New App',
@@ -57,7 +57,7 @@ function plugin_scripts() {
 
   wp_register_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'slick-carousel-js' );
-  
+
   wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'readmore-js' );
 
@@ -98,7 +98,7 @@ function socrata_apps_persona() {
       'show_ui' => true,
       'show_tagcloud' => false,
       'hierarchical' => true,
-      'sort' => true,      
+      'sort' => true,
       'args' => array( 'orderby' => 'term_order' ),
       'show_admin_column' => true,
       'rewrite' => array('with_front' => false, 'slug' => 'persona')
@@ -121,7 +121,7 @@ function socrata_apps_industry() {
       'show_ui' => true,
       'show_tagcloud' => false,
       'hierarchical' => true,
-      'sort' => true,      
+      'sort' => true,
       'args' => array( 'orderby' => 'term_order' ),
       'show_admin_column' => true,
       'rewrite' => array('with_front' => false, 'slug' => 'industry')
@@ -144,7 +144,7 @@ function socrata_apps_resources() {
       'show_ui' => true,
       'show_tagcloud' => false,
       'hierarchical' => true,
-      'sort' => true,      
+      'sort' => true,
       'args' => array( 'orderby' => 'term_order' ),
       'show_admin_column' => true,
       'rewrite' => array('with_front' => false, 'slug' => 'resources')
@@ -200,14 +200,14 @@ function display_app_tile($app, $is_featured) {
   // Get app meta field values
   $meta = get_socrata_apps_meta($app->ID);
   $size = $meta[23] === 'yes' && $is_featured ? 'tile-lg' : 'tile-md';
-  
-  // setting up data attributes for filtering           
+
+  // setting up data attributes for filtering
   $data_cost = '';
   $data_certified = '';
   $data_groups_array = array();
   $data_groups_string = '';
   $data_platform_array = array();
-  $data_platform_string = '';           
+  $data_platform_string = '';
 
   // Create filter attributes string
   if ($meta[19] !== 'Paid App') {
@@ -239,8 +239,8 @@ function display_app_tile($app, $is_featured) {
           <?php echo wp_get_attachment_image($meta[5], $meta[23] === 'yes' && $is_featured ? 'screen-lg' : 'screen-md', false, array('class' => 'img-responsive')); ?>
         </a>
       </div>
-      <div class="tile-content">        
-        <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
+      <div class="tile-content">
+        <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>
         <h3><?php echo $app->post_title; ?></a></h3>
         <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
         <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade"><?php echo $button_label; ?></a>
@@ -312,15 +312,17 @@ function get_apps_tiles_by_term($taxonomies) {
 
       $title = $term->slug === 'featured' ? 'Featured Apps' : 'Apps for ' . $term->name;
 
-      echo '<h2 style="display: inline-block" class="title">'. $title .'</h2>';
+      echo '<h2 style="display: inline-block; float:left;" class="title">'. $title .'</h2>';
 
-      echo '<div class="'. $term->slug .'-arrows" style="position:relative; display: inline-block; top:-8px; left: 40px;"></div>';
+      echo '<div class="'. $term->slug .'-arrows" style="float: right; position: relative; margin-right: 74px;"></div>';
+
+      echo '<div style="clear:both;"></div>';
 
       echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
 
       foreach ($apps as $app) {
 
-        // This foreach statement and the one below (BLOCK AB1), will force apps that have already been loaded to the end of the array. 
+        // This foreach statement and the one below (BLOCK AB1), will force apps that have already been loaded to the end of the array.
         // if (array_key_exists($app->ID, $loaded_apps)) {
         //     $skipped_apps[$app->ID] = $app;
         //     continue;
@@ -342,7 +344,7 @@ function get_apps_tiles_by_term($taxonomies) {
       if ($term->slug !== 'featured') { ?>
       <script>
         $(document).ready(function(){
-          
+
           $('.row.carousel.<?php echo $term->slug; ?>').slick({
             slidesToShow: 3,
             slidesToScroll: 3,
@@ -375,7 +377,7 @@ function get_apps_tiles_by_term($taxonomies) {
         });
       </script>
       <?php } ?>
-      
+
   <?php } ?>
 
   <script>
@@ -394,13 +396,13 @@ function get_apps_tiles_by_term($taxonomies) {
               result.push($(this).attr('data-cost') === 'free');
             }
             if (certifiedIsChecked) {
-              result.push($(this).attr('data-certified') === 'certified'); 
+              result.push($(this).attr('data-certified') === 'certified');
             }
             platformArray = jQuery.parseJSON( $(this).attr('data-platform'));
             result.push($.inArray(selectedPlatform, platformArray) == '-1' ? false : true);
             return ($.inArray(false, result) == '-1' ? true : false);
           });
-          
+
           if($(rowCategory).slick('getSlick').slideCount == 0){
             $(this).addClass('no-results');
           } else {
