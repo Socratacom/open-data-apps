@@ -35,18 +35,17 @@
 }
 .js-platform {
 	padding-right: 10px;
+	width: 100%;
+	max-width: 180px;
 }
 
-.shuffle-item {
-	/*margin-bottom: 30px;*/
-}
 </style>
 
 <div class="filter-bar hidden-xs">
 
 	<?php if ( !is_single() && have_posts() && !is_tax('socrata_apps_resources')) { ?>
 
-	<div class="pull-right">
+	<div style="text-align:right; width: 100%;">
 		<span style="display: inline-block; margin-left: 15px; margin-right: 5px; color: #999">
 		Filter by: 
 		</span>
