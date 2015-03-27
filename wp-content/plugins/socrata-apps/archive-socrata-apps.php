@@ -11,11 +11,7 @@
                         <p style="margin-bottom: 20px">For government buyers and consumers the Marketplace <br>organizes and facilitates easy discoverability of engaging applications.</p>
                         <p style="margin-bottom: 5px">Civic App Developers, we want your app.</p>
                         <p style="margin-bottom: 30px;">For civic application developers it provides an ideal vehicle <br>to grow your business.</p>
-<<<<<<< HEAD
-                        <a href="/apps/submit-app/" class="btn btn-outline">Submit your app</a>
-=======
                         <a href="/submit-app/" class="btn btn-outline">Submit your app</a>
->>>>>>> development
                     </div>
                 </div>
             </div>
@@ -30,23 +26,16 @@
         <?php get_template_part( 'sidebar-app-nav' ); ?>
 
         <div class="col-xs-12 col-sm-8 col-md-9"><!-- App Tiles -->
-<<<<<<< HEAD
-=======
             
             <?php do_action( 'above_primary_content' ); ?>
 
->>>>>>> development
             <div class="row">
                 <div id="content">
                     <div class="col-xs-12">
                         <h2 class="title"><?php single_cat_title('',true); ?></h2>
                     </div>
                     <div id="grid" class="col-xs-12">
-<<<<<<< HEAD
-                      <?php get_apps_tiles_by_term('socrata_apps_persona'); ?> 
-=======
                         <?php get_apps_tiles_by_term('socrata_apps_persona'); ?> 
->>>>>>> development
                     </div>
                 </div>
             </div>

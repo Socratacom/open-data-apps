@@ -23,11 +23,7 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
 
     <div class="col-sm-8 col-md-9"><!-- Content Column -->
       
-<<<<<<< HEAD
-      <?php include('filter-bar.php'); ?>
-=======
       <?php do_action( 'above_primary_content' ); ?>
->>>>>>> development
 
       <div class="app-frame">
 

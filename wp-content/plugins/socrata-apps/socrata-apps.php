@@ -52,18 +52,6 @@ function plugin_scripts() {
   wp_enqueue_style( 'slick-carousel-theme', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'slick-carousel-theme' );
 
-<<<<<<< HEAD
-  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
-  wp_enqueue_style( 'socrata-apps' );
-
-  wp_register_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), false, null, true );
-  wp_enqueue_script( 'slick-carousel-js' );
-  
-  wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
-  wp_enqueue_script( 'readmore-js' );
-
-  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
-=======
   wp_register_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'slick-carousel-js' );
 
@@ -82,7 +70,6 @@ function plugin_scripts() {
   wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'socrata-apps' );
   
->>>>>>> development
 
 }
 add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
@@ -180,17 +167,7 @@ add_filter( 'template_include', 'socrata_apps_single_template_function', 1 );
 function socrata_apps_single_template_function( $template_path ) {
   if ( get_post_type() == 'socrata_apps' ) {
     if ( is_single() ) {
-<<<<<<< HEAD
-      // checks if the file exists in the theme first,
-      // otherwise serve the file from the plugin
-      if ( $theme_file = locate_template( array ( 'single-socrata-apps.php' ) ) ) {
-        $template_path = $theme_file;
-      } else {
-        $template_path = plugin_dir_path( __FILE__ ) . 'single-socrata-apps.php';
-      }
-=======
       $template_path = plugin_dir_path( __FILE__ ) . 'single-socrata-apps.php';
->>>>>>> development
     }
   }
   return $template_path;
@@ -198,10 +175,6 @@ function socrata_apps_single_template_function( $template_path ) {
 
 add_filter( 'template_include', 'socrata_apps_archive_template_function', 1 );
 function socrata_apps_archive_template_function( $template_path ) {
-<<<<<<< HEAD
-  if ( get_post_type() == 'socrata_apps' || is_front_page() ) {
-    if ( is_archive() || is_front_page() ) {
-=======
   if ( is_front_page() || get_post_type() == 'socrata_apps' ) {
     if ( is_front_page() || is_archive() ) {
       $template_path = plugin_dir_path( __FILE__ ) . 'archive-socrata-apps.php';
@@ -214,28 +187,6 @@ add_filter( 'template_include', 'socrata_apps_category_template_function', 1 );
 function socrata_apps_category_template_function( $template_path ) {
   if ( get_post_type() == 'socrata_apps' ) {
     if ( is_tax() ) {
->>>>>>> development
-      // checks if the file exists in the theme first,
-      // otherwise serve the file from the plugin
-      if ( $theme_file = locate_template( array ( 'taxonomy-socrata-apps.php' ) ) ) {
-        $template_path = $theme_file;
-      } else {
-<<<<<<< HEAD
-        $template_path = plugin_dir_path( __FILE__ ) . 'archive-socrata-apps.php';
-=======
-        $template_path = plugin_dir_path( __FILE__ ) . 'taxonomy-socrata-apps.php';
->>>>>>> development
-      }
-    }
-  }
-  return $template_path;
-}
-
-<<<<<<< HEAD
-add_filter( 'template_include', 'socrata_apps_category_template_function', 1 );
-function socrata_apps_category_template_function( $template_path ) {
-  if ( get_post_type() == 'socrata_apps' ) {
-    if ( is_tax() ) {
       // checks if the file exists in the theme first,
       // otherwise serve the file from the plugin
       if ( $theme_file = locate_template( array ( 'taxonomy-socrata-apps.php' ) ) ) {
@@ -248,32 +199,10 @@ function socrata_apps_category_template_function( $template_path ) {
   return $template_path;
 }
 
-=======
->>>>>>> development
 
 // --------------------------------------------------------------------
 // FUNCTIONS FOR DISPLAYING APPS
 // --------------------------------------------------------------------
-<<<<<<< HEAD
-function display_app_tile($app, $term) { 
-
-  $meta = get_socrata_apps_meta($app->ID);
-  $size = $meta[23] === 'yes' && $term === 'featured' ? 'tile-lg' : 'tile-md';
-
-  ?>
-  <div class="shuffle col-xs-12 <?php if ($meta[23] === 'yes' && $term === 'featured') { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?>">
-    <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
-      <div class="tile-image">
-        <a href="<?php echo get_permalink($app->ID); ?>">
-          <?php echo wp_get_attachment_image($meta[5], 'screen-sm', false, array('class' => 'img-responsive')); ?>
-        </a>
-      </div>
-      <div class="tile-content">        
-        <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-sm', false, array('class' => 'tile-icon')); ?>  
-        <h3><?php echo $app->post_title; ?></a></h3>
-        <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
-        <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade">View App</a>
-=======
 function display_app_tile($app, $is_featured) {
 
   // Get app meta field values
@@ -323,7 +252,6 @@ function display_app_tile($app, $is_featured) {
         <h3><?php echo $app->post_title; ?></a></h3>
         <p class="tile-fade"><?php if ($meta[14]) echo "<strong>$meta[9]</strong><br>$meta[14]" ; ?></p>
         <a href="<?php echo get_permalink($app->ID); ?>" class="btn btn-primary btn-xs tile-btn tile-fade"><?php echo $button_label; ?></a>
->>>>>>> development
         <?php if ($meta[16]) echo "<ul class='appsIcons tile-certified'><li>Socrata Certified</li><li><span class='icon16'>Socrata Certified</span></li></ul>" ; ?>
         <div class="tile-overlay"></div>
         <a href="<?php echo get_permalink($app->ID); ?>" class="tile-link"></a>
@@ -333,11 +261,7 @@ function display_app_tile($app, $is_featured) {
 
 <?php }
 
-<<<<<<< HEAD
-function get_apps_tiles_by_term($term) {
-=======
 function get_apps_tiles_by_term($taxonomies) {
->>>>>>> development
 
   $args = array(
       'hide_empty' => true,
@@ -346,21 +270,13 @@ function get_apps_tiles_by_term($taxonomies) {
 
   $loaded_apps = array();
 
-<<<<<<< HEAD
-  $terms = get_terms( $term, $args );
-=======
   $terms = get_terms( $taxonomies, $args );
->>>>>>> development
 
   if (!is_array($terms)) {
     return;
   }
 
-<<<<<<< HEAD
-  usort($terms, function($a, $b) {
-=======
   @usort($terms, function($a, $b) {
->>>>>>> development
     $a = get_field('order_id', $a);
     $b = get_field('order_id', $b);
     return $a - $b;
@@ -390,72 +306,6 @@ function get_apps_tiles_by_term($taxonomies) {
       );
       $apps = get_posts( $args );
 
-<<<<<<< HEAD
-      $title = $term->slug === 'featured' ? 'Featured Apps' : 'Apps for ' . $term->name;
-
-      echo '<h2 style="display: inline-block" class="title">'. $title .'</h2>';
-
-      echo '<div class="'. $term->slug .'-arrows" style="position:relative; display: inline-block; top:-8px; left: 40px;"></div>';
-
-      echo '<div class="row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
-
-      foreach ($apps as $app) {
-
-        if (array_key_exists($app->ID, $loaded_apps)) {
-            $skipped_apps[$app->ID] = $app;
-            continue;
-        }
-
-        echo display_app_tile($app, $term->slug);
-        $loaded_apps[$app->ID] = $app;
-      }
-
-      foreach ($skipped_apps as $app) {
-        echo display_app_tile($app, $term->slug);
-        $loaded_apps[$app->ID] = $app;
-      }
-
-      echo '</div>';
-
-      if ($term->slug !== 'featured') {
-      echo '<script>
-              $(document).ready(function(){
-                $(\'.row.carousel.'. $term->slug .'\').slick({
-                  slidesToShow: 3,
-                  slidesToScroll: 3,
-                  appendArrows: \'.'. $term->slug .'-arrows\',
-                  responsive: [
-                      {
-                        breakpoint: 1024,
-                        settings: {
-                          slidesToShow: 3,
-                          slidesToScroll: 3
-                        }
-                      },
-                      {
-                        breakpoint: 600,
-                        settings: {
-                          slidesToShow: 2,
-                          slidesToScroll: 2
-                        }
-                      },
-                      {
-                        breakpoint: 480,
-                        settings: {
-                          slidesToShow: 1,
-                          slidesToScroll: 1
-                        }
-                      }
-                  ]
-                });
-              });
-            </script>';  
-      }
-      
-  }
-
-}
-=======
       if ($term->slug !== 'featured') {
         @usort($apps, function($a, $b) {
           $a = get_field('carousel_order', $a) === false ? 100 : intval(get_field('carousel_order', $a));
@@ -577,22 +427,15 @@ function get_apps_tiles_by_term($taxonomies) {
   </script>
 
 <?php }
->>>>>>> development
 
 
 // --------------------------------------------------------------------
 // FUNCTION FOR DISPLAYING THE FILTER BAR
 // --------------------------------------------------------------------
 function display_filter_bar($post_ID) {
-<<<<<<< HEAD
-   include('filter-bar.php');
-}
-add_action( 'above_primary_content', 'display_filter_bar' );
-=======
   if ( !is_single() ) {
     include('filter-bar.php');
   }
 }
 add_action('above_primary_content', 'display_filter_bar');
 
->>>>>>> development
