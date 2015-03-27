@@ -52,16 +52,24 @@ function plugin_scripts() {
   wp_enqueue_style( 'slick-carousel-theme', plugins_url( '/assets/slick/slick-theme.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'slick-carousel-theme' );
 
-  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
-  wp_enqueue_style( 'socrata-apps' );
-
   wp_register_script( 'slick-carousel-js', plugins_url( '/assets/slick/slick.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'slick-carousel-js' );
 
   wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'readmore-js' );
 
-  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );
+  wp_register_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), false, null, true );
+  wp_enqueue_script( 'shuffle-js' );  
+
+  wp_enqueue_script( 'bootstrap-select-js', plugins_url( '/assets/bootstrap-select/js/bootstrap-select.min.js' , __FILE__ ), array(), false, true );
+  wp_enqueue_script( 'bootstrap-select-js' );  
+
+  wp_register_style( 'bootstrap-select-css', plugins_url( '/assets/bootstrap-select/css/bootstrap-select.css' , __FILE__ ), array(), false, 'all' );
+  wp_enqueue_style( 'bootstrap-select-css' );
+
+  wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
+  wp_enqueue_style( 'socrata-apps' );
+  
 
 }
 add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
@@ -199,7 +207,7 @@ function display_app_tile($app, $is_featured) {
 
   // Get app meta field values
   $meta = get_socrata_apps_meta($app->ID);
-  $size = $meta[23] === 'yes' && $is_featured ? 'tile-lg' : 'tile-md';
+  $size = $meta[23] === 'yes' && $is_featured && 0? 'tile-lg' : 'tile-md';
 
   // setting up data attributes for filtering
   $data_cost = '';
@@ -232,7 +240,7 @@ function display_app_tile($app, $is_featured) {
   $button_label = count($term_list) > 0 ? 'View Template' : 'View App';
 
   ?>
-  <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>
+  <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured && 0) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>
     <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
         <a href="<?php echo get_permalink($app->ID); ?>">
@@ -319,6 +327,10 @@ function get_apps_tiles_by_term($taxonomies) {
       echo '<div style="clear:both;"></div>';
 
       echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
+      
+      // if ($term->slug === 'featured') {
+        // echo '<div class="shuffle__sizer col-xs-12 col-sm-6 col-md-4" style="height:247px;"></div>';
+      // }
 
       foreach ($apps as $app) {
 
@@ -358,7 +370,7 @@ function get_apps_tiles_by_term($taxonomies) {
               }
             },
             {
-              breakpoint: 600,
+              breakpoint: 991,
               settings: {
                 slidesToShow: 2,
                 slidesToScroll: 2
@@ -421,6 +433,9 @@ function get_apps_tiles_by_term($taxonomies) {
 // FUNCTION FOR DISPLAYING THE FILTER BAR
 // --------------------------------------------------------------------
 function display_filter_bar($post_ID) {
-  include('filter-bar.php');
+  if ( !is_single() ) {
+    include('filter-bar.php');
+  }
 }
 add_action('above_primary_content', 'display_filter_bar');
+
