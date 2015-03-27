@@ -17,6 +17,7 @@
 					</div>
 
 					<div class="col-xs-12">
+<<<<<<< HEAD
 
 						<div class="js-notice" style="display:none"><div style="color: #aaa">no apps found.</div></div>
 
@@ -76,6 +77,12 @@
 
 						<?php endwhile; ?><?php endif;?>
 
+=======
+						<div class="row js-shuffle">
+							<?php if(have_posts()): while(have_posts()): the_post(); ?>
+							<?php display_app_tile($post, false); ?>
+							<?php endwhile; ?><?php endif;?>
+>>>>>>> development
 						</div>
 					</div>
 
@@ -105,6 +112,7 @@ filter: none;
 $('.appsIcons span:contains(Socrata Certified)').addClass('icon-certified');
 </script>
 
+<<<<<<< HEAD
 <script>
 
 	var Exports = {
@@ -257,4 +265,6 @@ $('.appsIcons span:contains(Socrata Certified)').addClass('icon-certified');
 
 </script>
 
+=======
+>>>>>>> development
 <?php get_footer(); ?>
