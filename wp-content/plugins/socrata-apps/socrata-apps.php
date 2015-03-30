@@ -64,14 +64,17 @@ function plugin_scripts() {
   wp_enqueue_script( 'shuffle-js' );  
 
   wp_enqueue_script( 'bootstrap-select-js', plugins_url( '/assets/bootstrap-select/js/bootstrap-select.min.js' , __FILE__ ), array(), false, true );
-  wp_enqueue_script( 'bootstrap-select-js' );  
+  wp_enqueue_script( 'bootstrap-select-js' );
+
+  wp_enqueue_script( 'modernizr', plugins_url( '/assets/shuffle/jquery.shuffle.modernizr.min.js' , __FILE__ ), array(), false, false );
+
+  wp_enqueue_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), array(), false, true );  
 
   wp_register_style( 'bootstrap-select-css', plugins_url( '/assets/bootstrap-select/css/bootstrap-select.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'bootstrap-select-css' );
 
   wp_register_style( 'socrata-apps', plugins_url( '/style.css' , __FILE__ ), array(), false, 'all' );
   wp_enqueue_style( 'socrata-apps' );
-  
 
 }
 add_action( 'wp_enqueue_scripts', 'plugin_scripts' );
@@ -209,7 +212,7 @@ function display_app_tile($app, $is_featured) {
 
   // Get app meta field values
   $meta = get_socrata_apps_meta($app->ID);
-  $size = $meta[23] === 'yes' && $is_featured && 0? 'tile-lg' : 'tile-md';
+  $size = $meta[23] === 'yes' && $is_featured ? 'tile-lg' : 'tile-md';
 
   // setting up data attributes for filtering
   $data_cost = '';
@@ -242,11 +245,10 @@ function display_app_tile($app, $is_featured) {
   $button_label = count($term_list) > 0 ? 'View Template' : 'View App';
 
   ?>
-  <!-- <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured && 0) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>-->
   <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured) { echo 'col-sm-12 col-md-8 col-lg-8'; } else { echo 'col-sm-6 col-md-4 col-lg-4'; } ?> item" <?php echo $filter_attributes; ?>>
     <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
-        <a href="<?php echo get_permalink($app->ID); ?>">
+        <a href="<?php echo get_permalink($app->ID); ?>" style="position:relative; width:100%; height:0; padding-top:67%; display:block;">
           <?php echo wp_get_attachment_image($meta[5], $meta[23] === 'yes' && $is_featured ? 'screen-lg' : 'screen-md', false, array('class' => 'img-responsive')); ?>
         </a>
       </div>
@@ -325,16 +327,11 @@ function get_apps_tiles_by_term($taxonomies) {
 
       echo '<h2 style="display: inline-block; float:left;" class="title">'. $title .'</h2>';
 
-      echo '<div class="'. $term->slug .'-arrows" style="float: right; position: relative; margin-right: 74px;"></div>';
+      echo '<div class="'. $term->slug .'-arrows" style="float: right; position: relative; margin-right: 74px; margin-top: 10px;"></div>';
 
       echo '<div style="clear:both;"></div>';
 
-      // echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
-      
-      // if ($term->slug === 'featured') {
-        // echo '<div class="shuffle__sizer col-xs-12 col-sm-6 col-md-4" style="height:247px;"></div>';
-      // }
-      echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' shuffle--fluid row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
+      echo '<div data-category="'. $term->slug .'" class="row carousel '. $term->slug .' '. ($term->slug === 'featured' ? 'js-shuffle shuffle--fluid' : '') . '" style="margin-bottom: 30px;">';
 
       foreach ($apps as $app) {
 
@@ -356,7 +353,10 @@ function get_apps_tiles_by_term($taxonomies) {
       // }
 
       ?>
-      <div class="shuffle__sizer col-xs-1"></div>
+
+      <?php if ($term->slug === 'featured') { ?>
+        <div class="shuffle__sizer col-xs-1"></div>
+      <?php } ?>
 
       <?php
 

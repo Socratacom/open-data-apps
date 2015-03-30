@@ -231,7 +231,35 @@ Exports.Modules.Gallery = (function($, undefined) {
 
 }(jQuery));
 
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
 $(document).ready(function() {
 	Exports.Modules.Gallery.init();
+
+	var reshuffle = debounce(function() {
+		$('.js-shuffle').shuffle('layout');
+	}, 500)
+
+	var is_resizing = false;
+	$(window).bind('resize', reshuffle);
+
+	$('.js-shuffle').on('done.shuffle', function() {
+		$('.js-shuffle').shuffle('layout');
+	});
+	
+
 });
 </script>

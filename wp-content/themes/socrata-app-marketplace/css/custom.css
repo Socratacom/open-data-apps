@@ -399,7 +399,7 @@ p {
 }
 .tile-image {
 	padding-bottom: 50px;
-	max-height: 250px;
+	/*height: 217px;*/
 }
 .tile-link {
 	position: absolute;
@@ -459,8 +459,8 @@ ul.tile-certified {
 }
 /* Large Tile */
 .tile-lg {
-	width:555px;
-	height:464px;
+	/*width:555px;*/
+	height: 482px;
 }
 .tile-lg .tile-content {
 	padding:30px;
@@ -506,8 +506,7 @@ ul.tile-certified {
 /* Medium Tile */
 .tile-md {
 	/*width:262px;*/
-	width: 100%;
-	height: 217px;
+	/*height: 217px;*/
 }
 .tile-md .tile-content {
 	padding:15px;
@@ -553,16 +552,19 @@ ul.tile-certified {
 
 /* Mobile Styles */
 @media screen and (max-width: 1200px) {
+	.tile-image {
+		/*height: auto;*/
+	}
 	.tile-lg {
 		/*width:455px;*/
-		/*height: 402px;*/
+		height: 414px;
 	}
 	.tile-lg .tile-content, .tile-lg .tile-link {
 		top:290px;
 	}
 	.tile-md {
 		/*width:213px;*/
-		height: 186px;
+		/*height: 186px;*/
 	}
 	.tile-md .tile-content, .tile-md .tile-link {
 		/*top:136px;*/
@@ -599,8 +601,11 @@ ul.tile-certified {
 }
 
 @media screen and (max-width: 767px) {
+	.tile-image {
+		min-height: 217px;
+	}
 	.tile-lg {
-		/*height: 250px;*/
+		height: 217px;
 	}
 	.tile-lg p {
 		font-size: 12px;
@@ -636,7 +641,7 @@ ul.tile-certified {
 	}
 	.tile-md {
 		/*width:100%;*/
-		/*height: 250px;*/
+		height: 250px;
 	}
 	.tile-md .tile-icon {
 		width:50px;
@@ -655,7 +660,7 @@ ul.tile-certified {
 
 	.tile-md h3 {
 		font-size: 18px;
-		overflow-x: hidden;
+		overflow: hidden;
 		width: auto;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -1010,7 +1015,10 @@ ul.commentratingbox {
 	}
 }
 img.img-responsive {
-	width:100%;
+	width: 100%;
+	position: absolute; 
+	top: 0; 
+	left: 0; 
 }
 .carousel {
 	margin-bottom:45px;
