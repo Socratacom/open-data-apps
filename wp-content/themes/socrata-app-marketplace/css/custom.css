@@ -506,7 +506,8 @@ ul.tile-certified {
 /* Medium Tile */
 .tile-md {
 	/*width:262px;*/
-	/*height: 217px;*/
+	width: 100%;
+	height: 217px;
 }
 .tile-md .tile-content {
 	padding:15px;
@@ -561,7 +562,7 @@ ul.tile-certified {
 	}
 	.tile-md {
 		/*width:213px;*/
-		/*height: 186px;*/
+		height: 186px;
 	}
 	.tile-md .tile-content, .tile-md .tile-link {
 		/*top:136px;*/

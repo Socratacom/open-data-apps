@@ -29,3 +29,10 @@
 .slick-next:before {
 	content: "\e612";
 }
+
+
+.js-shuffle .shuffle__sizer {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}

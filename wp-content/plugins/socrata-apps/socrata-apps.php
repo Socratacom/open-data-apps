@@ -58,6 +58,8 @@ function plugin_scripts() {
   wp_register_script( 'readmore-js', plugins_url( '/assets/readmore/readmore.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'readmore-js' );
 
+  wp_enqueue_script( 'modernizr', plugins_url( '/assets/shuffle/jquery.shuffle.modernizr.min.js' , __FILE__ ), array(), false, false );
+
   wp_register_script( 'shuffle-js', plugins_url( '/assets/shuffle/jquery.shuffle.min.js' , __FILE__ ), false, null, true );
   wp_enqueue_script( 'shuffle-js' );  
 
@@ -240,7 +242,8 @@ function display_app_tile($app, $is_featured) {
   $button_label = count($term_list) > 0 ? 'View Template' : 'View App';
 
   ?>
-  <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured && 0) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>
+  <!-- <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured && 0) { echo 'col-sm-12 col-md-8'; } else { echo 'col-sm-6 col-md-4'; } ?> item" <?php echo $filter_attributes; ?>>-->
+  <div class="shuffle-item col-xs-12 <?php if ($meta[23] === 'yes' && $is_featured) { echo 'col-sm-12 col-md-8 col-lg-8'; } else { echo 'col-sm-6 col-md-4 col-lg-4'; } ?> item" <?php echo $filter_attributes; ?>>
     <div class="tile <?php echo $size; ?>" <?php echo $data_groups; ?>>
       <div class="tile-image">
         <a href="<?php echo get_permalink($app->ID); ?>">
@@ -326,11 +329,12 @@ function get_apps_tiles_by_term($taxonomies) {
 
       echo '<div style="clear:both;"></div>';
 
-      echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
+      // echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
       
       // if ($term->slug === 'featured') {
         // echo '<div class="shuffle__sizer col-xs-12 col-sm-6 col-md-4" style="height:247px;"></div>';
       // }
+      echo '<div data-category="'. $term->slug .'" class="' . ($term->slug === 'featured' ? 'js-shuffle' : '') . ' shuffle--fluid row carousel '. $term->slug .'" style="margin-bottom: 30px;">';
 
       foreach ($apps as $app) {
 
@@ -350,6 +354,11 @@ function get_apps_tiles_by_term($taxonomies) {
       //   echo display_app_tile($app, $term->slug);
       //   $loaded_apps[$app->ID] = $app;
       // }
+
+      ?>
+      <div class="shuffle__sizer col-xs-1"></div>
+
+      <?php
 
       echo '</div>';
 

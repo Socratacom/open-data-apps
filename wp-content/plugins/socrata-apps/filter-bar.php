@@ -108,38 +108,26 @@ Exports.Modules.Gallery = (function($, undefined) {
 
 	setVars = function() {
 		$grid = $('.js-shuffle');
-		$cost = $('.js-cost');
+	    $sizer = $grid.find('.shuffle__sizer');
+	    $cost = $('.js-cost');
 		$certified = $('.js-certified');
 		$platform = $('.js-platform');
 		$device = $('.js-device');
-		$sizer = $grid.find('.shuffle__sizer');
 	},
 
 	initShuffle = function() {
-	    // instantiate the plugin
+
+    	// instantiate the plugin
 	    $grid.shuffle({
 	    	itemSelector: '.shuffle-item',
-	    	// columnWidth: 233,
-	    	// columnWidth: function( containerWidth ) {
-	    	// 	console.log(Math.round((containerWidth - 30) / 3));
-	    	// .box's have a width of 18%
-	    	// 	// return 0.33 * containerWidth;
-	    	// 	// return Math.round((containerWidth - 30) / 3);
-	    	// 	return 283;
-	    	// },
-	    	// sizer: $('.js-shuffle .sizer'),
-	    	// sizer: $sizer,
-	    	// gutterWidth: 0,
-	      	speed: 250,
-	      	delimeter: ',',
-	      	// buffer: 0, // Useful for percentage based heights when they might not always be exactly the same (in pixels).
-			// columnThreshold: 0 ? 0.01 : 0.1, // Reading the width of elements isn't precise enough and can cause columns to jump between values.
-	        // easing: 'cubic-bezier(0.165, 0.840, 0.440, 1.000)' // easeOutQuart
+	        delimeter: ',',
+	        sizer: $sizer,
+	        columnThreshold: 0.01
 	    });
 
 		$('.js-cost input, .js-certified input, .js-platform select').change();
 
-  	},
+  },
 
  	initFilters = function() {
 
