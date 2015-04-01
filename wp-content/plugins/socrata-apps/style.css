@@ -29,3 +29,13 @@
 .slick-next:before {
 	content: "\e612";
 }
+<<<<<<< HEAD
+=======
+
+
+.js-shuffle .shuffle__sizer {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}
+>>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
