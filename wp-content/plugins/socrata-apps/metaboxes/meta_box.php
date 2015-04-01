@@ -490,9 +490,10 @@ class socrata_apps_custom_add_meta_box {
 				switch( $field['type'] ) {
 					// date
 					case 'date' :
-						echo '$("#' . $field['id'] . '").datepicker({
+						echo 'if ($("#' . $field['id'] . '").length) { 
+							$("#' . $field['id'] . '").datepicker({
 								dateFormat: \'d MM, yy\'
-							});';
+							}); }';
 					break;
 					// slider
 					case 'slider' :
