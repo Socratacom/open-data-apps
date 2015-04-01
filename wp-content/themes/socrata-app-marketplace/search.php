@@ -17,6 +17,7 @@ get_header(); ?>
             <div id="content" role="main">
               <h2 class="title">Search Results for &ldquo;<?php the_search_query(); ?>&rdquo;</h2>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
               <div id="grid" class="row">
@@ -61,6 +62,8 @@ get_header(); ?>
                 <?php endwhile; ?>
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
               <div class="js-notice" style="display:none"><div style="color: #666; font-size:18px">No apps found.</div></div>
 
             <div class="row js-shuffle">
@@ -68,8 +71,11 @@ get_header(); ?>
                   <?php display_app_tile($post, false); ?>
                   <?php endwhile; ?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
               </div>
               <?php else :?>

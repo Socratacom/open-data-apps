@@ -24,6 +24,7 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
     <div class="col-sm-8 col-md-9"><!-- Content Column -->
       
 <<<<<<< HEAD
+<<<<<<< HEAD
       <?php do_action( 'above_primary_content' ); ?>
 =======
 <<<<<<< HEAD
@@ -31,6 +32,9 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
 =======
       <?php do_action( 'above_primary_content' ); ?>
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+      <?php do_action( 'above_primary_content' ); ?>
 >>>>>>> staging
 
       <div class="app-frame">
@@ -43,11 +47,7 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
 
           <div class="hidden-xs col-xs-12 col-sm-2 col-md-3 app-specs-column">
             
-<<<<<<< HEAD
-            <div style="margin-bottom: 20px"><?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false, array('class' => 'img-responsive app-icon')); ?></div>
-=======
             <div style="margin-bottom: 20px"><?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false, array('class' => 'app-icon')); ?></div>
->>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
             
             <ul class="app-buttons">
             <?php if ($meta[21]) { ?>

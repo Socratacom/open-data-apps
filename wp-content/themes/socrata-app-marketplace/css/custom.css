@@ -104,6 +104,7 @@ p {
 .field-search-icon {
 	background: url(../images/search.svg) no-repeat 16px / 16px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 	border-radius: 5px; 
@@ -112,13 +113,18 @@ p {
 	width: 100%; 
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
 	border-radius: 5px;
 	border: 1px solid #ccc;
 	padding: 10px 12px 10px 46px;
 	width: 100%;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 	opacity: .5;
 }
@@ -157,6 +163,7 @@ p {
 	display: block;
 	padding: 8px 15px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 <<<<<<< HEAD
@@ -164,6 +171,9 @@ p {
 =======
 }
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+}
 >>>>>>> staging
 .app-nav .menu a:hover {
 	text-decoration: none;
@@ -364,6 +374,7 @@ p {
 /*******************************/
 .hero {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	padding:45px 60px 50px;
 	background: url(../images/submit-app-hero-bg.png) no-repeat 150% 90% #3498db;
 	color:#fff;
@@ -378,10 +389,16 @@ p {
 	color:#fff;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
 >>>>>>> staging
+=======
+	padding:45px 60px 50px;
+	background: url(../images/submit-app-hero-bg.png) no-repeat 150% 90% #3498db;
+	color:#fff;
+>>>>>>> staging
 	margin-bottom: 30px;
 }
 
 .hero p {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	font-weight: 300;
 	line-height: 1.5;
@@ -396,6 +413,11 @@ p {
 	line-height: 1.5;
 	font-size: 18px;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+	font-weight: 300;
+	line-height: 1.5;
+	font-size: 18px;
 >>>>>>> staging
 }
 
@@ -412,6 +434,7 @@ p {
 		font-size: 16px;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 <<<<<<< HEAD
@@ -419,6 +442,9 @@ p {
 =======
 }
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+}
 >>>>>>> staging
 
 
@@ -560,6 +586,7 @@ ul.tile-certified {
 .tile-md {
 	/*width:262px;*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*height: 217px;*/
 =======
 <<<<<<< HEAD
@@ -567,6 +594,9 @@ ul.tile-certified {
 =======
 	/*height: 217px;*/
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+	/*height: 217px;*/
 >>>>>>> staging
 }
 .tile-md .tile-content {
@@ -663,18 +693,24 @@ ul.tile-certified {
 
 @media screen and (max-width: 767px) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.tile-lg {
 <<<<<<< HEAD
 		/*height: 250px;*/
 =======
 		height: 250px;
 =======
+=======
+>>>>>>> staging
 	.tile-image {
 		min-height: 217px;
 	}
 	.tile-lg {
 		height: 217px;
+<<<<<<< HEAD
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 	}
 	.tile-lg p {
@@ -730,11 +766,7 @@ ul.tile-certified {
 
 	.tile-md h3 {
 		font-size: 18px;
-<<<<<<< HEAD
-		overflow-x: hidden;
-=======
 		overflow: hidden;
->>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
 		width: auto;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -762,6 +794,7 @@ ul.tile-certified {
 /*******************************/
 .app-frame {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	background: #E9E9E9;
 =======
 <<<<<<< HEAD
@@ -769,6 +802,9 @@ ul.tile-certified {
 =======
 	background: #E9E9E9;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+	background: #E9E9E9;
 >>>>>>> staging
 	padding: 30px;
 	position: relative;
@@ -918,6 +954,7 @@ ul.app-specs {
 }
 .addthis_sharing_toolbox {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	position: absolute;
 	top: 0;
 	right: 25px;
@@ -932,6 +969,11 @@ ul.app-specs {
 	right: 25px;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
 >>>>>>> staging
+=======
+	position: absolute;
+	top: 0;
+	right: 25px;
+>>>>>>> staging
 	margin-top: -15px;
 }
 .divider {
@@ -943,6 +985,7 @@ ul.app-specs {
 	vertical-align: middle;
 }
 .cost-toggle {
+<<<<<<< HEAD
 <<<<<<< HEAD
   width: 120px;
   height: 25px;
@@ -958,10 +1001,16 @@ ul.app-specs {
   border: 1px solid #2ecc71;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
 >>>>>>> staging
+=======
+  width: 120px;
+  height: 25px;
+  border: 1px solid #2ecc71;
+>>>>>>> staging
   border-radius: 5px;
 }
 
 .side {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -974,6 +1023,8 @@ ul.app-specs {
   background: #fff; 
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
   width:50%;
   float:left;
   text-align: center;
@@ -982,8 +1033,11 @@ ul.app-specs {
   line-height: 23px;
   background: #fff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
   color: #ddd;
   font-size: 12px;
@@ -1007,6 +1061,7 @@ ul.app-specs {
 	}
 	.app-frame {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		background: transparent;
 =======
 <<<<<<< HEAD
@@ -1014,6 +1069,9 @@ ul.app-specs {
 =======
 		background: transparent;
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
+		background: transparent;
 >>>>>>> staging
 		padding: 0;
 	}
@@ -1944,6 +2002,7 @@ fieldset[disabled] .btn-link:focus {
 	color: #999;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> staging
@@ -2141,6 +2200,8 @@ div.gf_page_steps + div.validation_error {
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> staging
 
 .gform_fields {
 	margin-top: -20px;
@@ -2349,7 +2410,10 @@ div.gf_page_steps + div.validation_error {
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
 	width: 100%;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 }

@@ -1,6 +1,7 @@
 <style>
 .filter-bar {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 	background: #e9e9e9; 
@@ -15,6 +16,8 @@
 	margin-left: -20px; 
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
 	background: #e9e9e9;
 	margin-bottom: 30px;
 	height: 42px;
@@ -27,8 +30,11 @@
 .filter-bar .btn-default {
 	margin-left: -20px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 	vertical-align: top;
 	background: #ddd;
@@ -37,12 +43,15 @@
 
 .filter-bar .btn-group {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 	margin-left: 20px; 
 	margin-right: -20px; 
 	vertical-align: top;
 }
+=======
+>>>>>>> staging
 =======
 >>>>>>> staging
 	vertical-align: top;
@@ -69,13 +78,17 @@
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 </style>
 
 <div class="filter-bar hidden-xs">
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -132,6 +145,8 @@
 				<option value="desktop">Desktop</option>
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
 	<?php if ( !is_single() && have_posts() && !is_tax('socrata_apps_resources')) { ?>
 
 	<div style="text-align:right; width: 100%;">
@@ -159,8 +174,11 @@
 			    <option value="linux">Linux</option>
 			    <option value="windows">Windows</option>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 			</select>
 		</div>
@@ -171,8 +189,11 @@
 
 </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> staging
 =======
 >>>>>>> staging
 
@@ -362,6 +383,9 @@ $(document).ready(function() {
 });
 </script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging

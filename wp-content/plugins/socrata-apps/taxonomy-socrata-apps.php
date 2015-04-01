@@ -18,6 +18,7 @@
 
 					<div class="col-xs-12">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 
@@ -81,13 +82,18 @@
 
 =======
 >>>>>>> staging
+=======
+>>>>>>> staging
 						<div class="row js-shuffle">
 							<?php if(have_posts()): while(have_posts()): the_post(); ?>
 							<?php display_app_tile($post, false); ?>
 							<?php endwhile; ?><?php endif;?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 						</div>
 					</div>
@@ -118,6 +124,7 @@ filter: none;
 $('.appsIcons span:contains(Socrata Certified)').addClass('icon-certified');
 </script>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -275,5 +282,7 @@ $('.appsIcons span:contains(Socrata Certified)').addClass('icon-certified');
 
 =======
 >>>>>>> ce52966a649cbb70448ad5b1e5438ea43d7740e9
+>>>>>>> staging
+=======
 >>>>>>> staging
 <?php get_footer(); ?>
