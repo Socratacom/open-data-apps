@@ -713,6 +713,11 @@ ul.tile-certified {
 .app-title {
 	letter-spacing: -1px;
 }
+.app-icon {
+	height: auto;
+    max-width: 100%;
+    width: 100%;
+}
 .app-meta {
 	font-size:13px;
 	color:#999;

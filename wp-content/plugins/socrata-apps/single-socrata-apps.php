@@ -35,7 +35,7 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
 
           <div class="hidden-xs col-xs-12 col-sm-2 col-md-3 app-specs-column">
             
-            <div style="margin-bottom: 20px"><?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false, array('class' => 'img-responsive app-icon')); ?></div>
+            <div style="margin-bottom: 20px"><?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false, array('class' => 'app-icon')); ?></div>
             
             <ul class="app-buttons">
             <?php if ($meta[21]) { ?>

@@ -33,10 +33,11 @@
 	font-size: 13px;
 	margin-top: 7px;
 }
+
 .js-platform {
 	padding-right: 10px;
 	width: 100%;
-	max-width: 180px;
+	max-width: 170px;
 }
 
 </style>
@@ -122,7 +123,7 @@ Exports.Modules.Gallery = (function($, undefined) {
 	    	itemSelector: '.shuffle-item',
 	        delimeter: ',',
 	        sizer: $sizer,
-	        columnThreshold: 0.01
+	        columnThreshold: 0.1
 	    });
 
 		$('.js-cost input, .js-certified input, .js-platform select').change();

@@ -327,7 +327,7 @@ function get_apps_tiles_by_term($taxonomies) {
 
       echo '<h2 style="display: inline-block; float:left;" class="title">'. $title .'</h2>';
 
-      echo '<div class="'. $term->slug .'-arrows" style="float: right; position: relative; margin-right: 74px; margin-top: 10px;"></div>';
+      echo '<div class="'. $term->slug .'-arrows" style="float: right; position: relative; margin-right: 74px; margin-top: 0;"></div>';
 
       echo '<div style="clear:both;"></div>';
 
