@@ -155,8 +155,8 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
 
             <div class="clearfix" style="margin-bottom: 20px">
 
-              <div class="visible-xs" style="width: 80px; float:left;">
-                <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false, array('class' => 'img-responsive app-icon')); ?>
+              <div class="visible-xs thumbnail" style="width: 80px; float:left;">
+                <?php if ($meta[4]) echo wp_get_attachment_image($meta[4], 'square-md', false); ?>
               </div>
             
               <div class="app-title-wrapper">
@@ -215,23 +215,23 @@ if ($term_list[0]->taxonomy === 'socrata_apps_resources') {
                   <div class="carousel-inner">
                     <?php if ($meta[6]) { ?>        
                         <div class="item active">                
-                          <?php echo wp_get_attachment_image($meta[6], 'screen-lg', false, array('class' => 'img-responsive')); ?>
+                          <?php echo wp_get_attachment_image($meta[6], 'screen-lg', false); ?>
                         </div>
                     <?php } ?>
                     <?php if ($meta[7]) { ?>        
                         <div class="item">                
-                          <?php echo wp_get_attachment_image($meta[7], 'screen-lg', false, array('class' => 'img-responsive')); ?>
+                          <?php echo wp_get_attachment_image($meta[7], 'screen-lg', false); ?>
                         </div>
                     <?php } ?>
                     <?php if ($meta[8]) { ?>        
                         <div class="item">                
-                          <?php echo wp_get_attachment_image($meta[8], 'screen-lg', false, array('class' => 'img-responsive')); ?>
+                          <?php echo wp_get_attachment_image($meta[8], 'screen-lg', false); ?>
                         </div>
                     <?php } ?>
                   </div>
                 </div>
               <?php } else { ?>
-                <div class="single-screen"><?php echo wp_get_attachment_image($meta[6], 'screen-lg', false, array('class' => 'img-responsive')); ?></div>
+                <div class="thumbnail"><?php echo wp_get_attachment_image($meta[6], 'screen-lg', false); ?></div>
               <?php } ?>
               </div>
             </div>
@@ -411,7 +411,7 @@ $(function(){
     moreLink: '<a href="#">Show more</a>',
     lessLink: '<a href="#">Show less</a>'
   });
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
 });
 </script>
 
