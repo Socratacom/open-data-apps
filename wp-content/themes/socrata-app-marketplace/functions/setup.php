@@ -75,10 +75,10 @@ function modify_wp_search_where($where) {
   if ( !is_admin() && is_search() ) {
     
     global $wpdb, $wp;
-    
+
     $where = preg_replace(
-      "/($wpdb->posts.post_title (LIKE '%{$wp->query_vars['s']}%'))/i",
-      "$0 OR ( $wpdb->postmeta.meta_value LIKE '%{$wp->query_vars['s']}%' )",
+      "/({$wpdb->posts}.post_title (LIKE '%". preg_quote(esc_sql(get_query_var('s')), '/') ."%'))/i",
+      "$0 OR ( {$wpdb->postmeta}.meta_value LIKE '%". preg_quote(esc_sql(get_query_var('s')), '/') ."%' )",
       $where
       );
     
