@@ -16,6 +16,7 @@ if (!class_exists('GFCPTAddon1_5')) {
 
             //then add these for 1.5...
             //add our advanced options to the form builder
+            add_action('gform_field_standard_settings', array(&$this, 'render_field_standard_settings'), 10, 2);
             add_action('gform_field_advanced_settings', array(&$this, 'render_field_advanced_settings'), 10, 2);
 
             //include javascript for the form builder
@@ -77,10 +78,31 @@ if (!class_exists('GFCPTAddon1_5')) {
            $tooltips["form_field_populate_post_type"] = "<h6>Populate with a Post Type</h6>Check this box to populate this field from a specific post type.";
            $tooltips["form_field_set_parent_post"] = "<h6>Try to set parent</h6>If this is checked, and the form creates a post type, then the parent for the newly created post type will be set from the value of this field. Please note that this only works for heirarcical post typs e.g. pages";
            $tooltips["form_field_custom_taxonomy"] = "<h6>Populate with a Taxonomy</h6>Check this box to populate this field from a custom taxonomy.";
-           $tooltips["form_field_custom_post_type"] = "<h6>Save As Post Type</h6>Check this box to save this form to a specific post type.";
+           $tooltips["form_field_custom_post_type"] = sprintf( '<h6>%s</h6> %s', __( 'Post Type', 'gravityforms' ), __( 'This form will create a WordPress post. Which post type should that post be assigned? Use this setting to specify the desired post type.' ) );
            $tooltips["form_field_save_to_taxonomy"] = "<h6>Save To Taxonomy</h6>Check this box to save this field to a specific custom taxonomy. Please note that the taxonomy must NOT be hierarchical.";
            $tooltips["form_field_tax_enhanced"] = "<h6>Enable Enhanced UI</h6>By selecting this option, this field will be tranformed into a 'tag input' control which makes it more user-friendly for selecting existing and capturing new taxonomies.";
            return $tooltips;
+        }
+
+        /*
+         * Add some advanced settings to the fields
+         */
+         function render_field_standard_settings( $position, $form_id ) {
+            if( $position == 50 ) {
+                $post_type_args = gf_apply_filters( 'gfcpt_post_type_args', array( $form_id ), array( 'public' => true ), $form_id );
+                $post_types = get_post_types( $post_type_args, 'objects' );
+                ?>
+                <li class="custom_post_type_field_setting field_setting">
+                    <label for="field_populate_custom_post_type"><?php _e( 'Post Type', 'gravityforms' ); ?> <?php gform_tooltip("form_field_custom_post_type") ?></label>
+                    <select id="field_populate_custom_post_type" onchange="SetFieldProperty('saveAsCPT', jQuery(this).val());">
+                        <?php foreach( $post_types as $post_type ): ?>
+                            <option value="<?php echo $post_type->name; ?>" <?php selected( 'post', $post_type->name ); ?>><?php echo $post_type->label; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </li>
+                <?php
+            }
+
         }
 
         /*
@@ -132,24 +154,6 @@ if (!class_exists('GFCPTAddon1_5')) {
                       </label>
                       <?php gform_tooltip("form_field_set_parent_post") ?>
                     </div>
-                </li>
-                <li class="custom_post_type_field_setting field_setting" style="display:list-item;">
-                    <input type="checkbox" id="field_enable_custom_post_type" />
-                    <label for="field_enable_custom_post_type" class="inline">
-                        <?php _e("Save As Post Type", "gravityforms"); ?>
-                    </label>
-                    <?php gform_tooltip("form_field_custom_post_type") ?><br />
-                    <select id="field_populate_custom_post_type" onchange="SetFieldProperty('saveAsCPT', jQuery(this).val());" style="margin-top:10px; display:none;">
-                        <option value="" style="color:#999;">Select a Post Type</option>
-                    <?php
-                    $args=array(
-                      'public'   => true
-                    );
-                    $post_types = get_post_types($args, 'objects');
-                    foreach($post_types as $post_type): ?>
-                        <option value="<?php echo $post_type->name; ?>"><?php echo $post_type->label; ?></option>
-                    <?php endforeach; ?>
-                    </select>
                 </li>
                 <li class="save_to_taxonomy_field_setting field_setting" style="display:list-item;">
                     <input type="checkbox" class="toggle_setting" id="field_enable_save_to_taxonomy" />
@@ -239,28 +243,22 @@ if (!class_exists('GFCPTAddon1_5')) {
                                 $populate_post_type_container.find(".check_parent").removeAttr("checked");
                               }
                           } else {
-                              $taxonomy_setting_container.find("input.toggle_setting").removeAttr("checked");
-                              $taxonomy_setting_container.find("select").val('');
+                              /*$taxonomy_setting_container.find("input.toggle_setting").removeAttr("checked");
+                              $taxonomy_setting_container.find("select").val('');*/
+	                          $populate_post_type_container.find("input.toggle_setting").removeAttr("checked");
+	                          $populate_post_type_container.find("select").val('');
                           }
 
                         }
 
                     } else if (field['type'] == 'post_title') {
-                        var $cpt_setting_container = jQuery(".custom_post_type_field_setting");
 
-                        $cpt_setting_container.show();
+                        var $cpt_setting_container = jQuery(".custom_post_type_field_setting" ),
+                            saveAsCPT              = ( typeof field['saveAsCPT'] != 'undefined' && field['saveAsCPT'] != '') ? field['saveAsCPT'] : 'post';
 
-                        var saveAsCPT = (typeof field['saveAsCPT'] != 'undefined' && field['saveAsCPT'] != '') ? field['saveAsCPT'] : false;
+                        //set the select and show
+                        $cpt_setting_container.show().find( 'select' ).val( saveAsCPT );
 
-                        if (saveAsCPT != false) {
-                            //check the checkbox if previously checked
-                            $cpt_setting_container.find("input:checkbox").attr("checked", "checked");
-                            //set the select and show
-                            $cpt_setting_container.find("select").val(saveAsCPT).show();
-                        } else {
-                            $cpt_setting_container.find("input:checkbox").removeAttr("checked");
-                            $cpt_setting_container.find("select").val('').hide();
-                        }
                     } else if (field['type'] == 'text') {
                         var $tax_setting_container = jQuery('.save_to_taxonomy_field_setting');
 
@@ -313,17 +311,6 @@ if (!class_exists('GFCPTAddon1_5')) {
 
                     } else {
                         SetFieldProperty('populateTaxonomy','');
-                        $select.slideUp();
-                    }
-                });
-
-                jQuery(".custom_post_type_field_setting input:checkbox").click(function() {
-                    var checked = jQuery(this).is(":checked");
-                    var $select = jQuery(this).parent(".custom_post_type_field_setting:first").find("select");
-                    if(checked){
-                        $select.slideDown();
-                    } else {
-                        SetFieldProperty('saveAsCPT','');
                         $select.slideUp();
                     }
                 });

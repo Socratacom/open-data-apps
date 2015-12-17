@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TinyMCE Advanced\n"
-"POT-Creation-Date: 2014-12-16 00:22-0800\n"
-"PO-Revision-Date: 2014-12-16 00:23-0800\n"
+"POT-Creation-Date: 2015-09-15 10:42-0800\n"
+"PO-Revision-Date: 2015-09-15 10:42-0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -18,243 +18,228 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../tadv_admin.php:21
-#, php-format
-msgid ""
-"This plugin requires WordPress version %1$s or newer. Please upgrade your "
-"WordPress installation or download an <a href=\"%2$s\">older version of the "
-"plugin</a>."
-msgstr ""
-
-#: ../tadv_admin.php:145
+#: ../tadv_admin.php:125
 msgid "Default settings restored."
 msgstr ""
 
-#: ../tadv_admin.php:154
+#: ../tadv_admin.php:137
 msgid "TinyMCE Advanced Settings Export"
 msgstr ""
 
-#: ../tadv_admin.php:158
+#: ../tadv_admin.php:141
 msgid "The settings are exported as a JSON encoded string."
 msgstr ""
 
-#: ../tadv_admin.php:159
+#: ../tadv_admin.php:142
 msgid ""
 "Please copy the content and save it in a <b>text</b> (.txt) file, using a "
 "plain text editor like Notepad."
 msgstr ""
 
-#: ../tadv_admin.php:160
+#: ../tadv_admin.php:143
 msgid ""
 "It is important that the export is not changed in any way, no spaces, line "
 "breaks, etc."
 msgstr ""
 
-#: ../tadv_admin.php:165
+#: ../tadv_admin.php:148
 msgid "Select All"
 msgstr ""
 
-#: ../tadv_admin.php:167 ../tadv_admin.php:191
+#: ../tadv_admin.php:150 ../tadv_admin.php:176
 msgid "Back to Editor Settings"
 msgstr ""
 
-#: ../tadv_admin.php:177
+#: ../tadv_admin.php:162
 msgid "TinyMCE Advanced Settings Import"
 msgstr ""
 
-#: ../tadv_admin.php:180
+#: ../tadv_admin.php:165
 msgid ""
 "The settings are imported from a JSON encoded string. Please paste the "
 "exported string in the text area below."
 msgstr ""
 
-#: ../tadv_admin.php:185
+#: ../tadv_admin.php:170
 msgid "Verify"
 msgstr ""
 
-#: ../tadv_admin.php:186
+#: ../tadv_admin.php:171
 msgid "Import"
 msgstr ""
 
-#: ../tadv_admin.php:213
+#: ../tadv_admin.php:201
 msgid "Importing of settings failed."
 msgstr ""
 
-#: ../tadv_admin.php:238
+#: ../tadv_admin.php:227
 msgid "ERROR: All toolbars are empty. Default settings loaded."
 msgstr ""
 
-#: ../tadv_admin.php:250
+#: ../tadv_admin.php:239
 msgid "Editor Settings"
 msgstr ""
 
-#: ../tadv_admin.php:254
+#: ../tadv_admin.php:246
 msgid "Settings saved."
 msgstr ""
 
-#: ../tadv_admin.php:263 ../tadv_admin.php:527
+#: ../tadv_admin.php:255 ../tadv_admin.php:509
 msgid "Save Changes"
 msgstr ""
 
-#: ../tadv_admin.php:268
+#: ../tadv_admin.php:260
 msgid ""
 "New in TinyMCE 4.0/WordPress 3.9 is the editor menu. When it is enabled, "
 "most buttons are also available as menu items."
 msgstr ""
 
-#: ../tadv_admin.php:272
+#: ../tadv_admin.php:264
 msgid "Enable the editor menu."
 msgstr ""
 
-#: ../tadv_admin.php:384
+#: ../tadv_admin.php:376
 msgid ""
 "Drag buttons from the unused buttons below and drop them in the toolbars "
 "above, or drag the buttons in the toolbars to rearrange them."
 msgstr ""
 
-#: ../tadv_admin.php:387
+#: ../tadv_admin.php:379
 msgid "Unused Buttons"
 msgstr ""
 
-#: ../tadv_admin.php:428
+#: ../tadv_admin.php:420
 msgid "Also enable:"
 msgstr ""
 
-#: ../tadv_admin.php:431
+#: ../tadv_admin.php:423
 msgid "List Style Options"
 msgstr ""
 
-#: ../tadv_admin.php:436
+#: ../tadv_admin.php:428
 msgid "Context Menu"
 msgstr ""
 
-#: ../tadv_admin.php:441
+#: ../tadv_admin.php:433
 msgid "Link (replaces the Insert/Edit Link dialog)"
 msgstr ""
 
-#: ../tadv_admin.php:451
+#: ../tadv_admin.php:443
 msgid "Advanced Options"
 msgstr ""
 
-#: ../tadv_admin.php:459
+#: ../tadv_admin.php:451
 msgid "Import editor-style.css."
 msgstr ""
 
-#: ../tadv_admin.php:461
+#: ../tadv_admin.php:453
 msgid "It seems your theme does not support customised styles for the editor."
 msgstr ""
 
-#: ../tadv_admin.php:462
+#: ../tadv_admin.php:454
 msgid ""
 "You can create a CSS file named <code>editor-style.css</code> and upload it "
 "to your theme's directory."
 msgstr ""
 
-#: ../tadv_admin.php:463
+#: ../tadv_admin.php:455
 msgid "After that, enable this setting."
 msgstr ""
 
-#: ../tadv_admin.php:472
+#: ../tadv_admin.php:464
 msgid ""
 "Load the CSS classes used in editor-style.css and replace the Formats button "
 "and sub-menu."
 msgstr ""
 
-#: ../tadv_admin.php:477
-msgid "Markdown typing support (text pattern plugin)"
-msgstr ""
-
-#: ../tadv_admin.php:479
-msgid ""
-"This plugin matches special patterns while you type and applies formats or "
-"executes commands on the matched text."
-msgstr ""
-
-#: ../tadv_admin.php:480
-msgid ""
-"The default patterns are the same as the markdown syntax so you can type "
-"<code># text</code> to create a header, <code>1. text</code> to create a "
-"list, <code>**text**</code> to make it bold, etc."
-msgstr ""
-
-#: ../tadv_admin.php:481
-msgid "More information"
-msgstr ""
-
-#: ../tadv_admin.php:487
+#: ../tadv_admin.php:469
 msgid ""
 "Stop removing the &lt;p&gt; and &lt;br /&gt; tags when saving and show them "
 "in the Text editor"
 msgstr ""
 
-#: ../tadv_admin.php:489
+#: ../tadv_admin.php:471
 msgid ""
 "This will make it possible to use more advanced coding in the HTML editor "
 "without the back-end filtering affecting it much."
 msgstr ""
 
-#: ../tadv_admin.php:490
+#: ../tadv_admin.php:472
 msgid ""
 "However it may behave unexpectedly in rare cases, so test it thoroughly "
 "before enabling it permanently."
 msgstr ""
 
-#: ../tadv_admin.php:491
+#: ../tadv_admin.php:473
 msgid ""
 "Line breaks in the HTML editor would still affect the output, in particular "
 "do not use empty lines, line breaks inside HTML tags or multiple &lt;br /"
 "&gt; tags."
 msgstr ""
 
-#: ../tadv_admin.php:497
+#: ../tadv_admin.php:479
 msgid "Replace font size settings"
 msgstr ""
 
-#: ../tadv_admin.php:498
+#: ../tadv_admin.php:480
 msgid ""
 "Replaces the size setting available for fonts with: 8px 10px 12px 14px 16px "
 "20px 24px 28px 32px 36px."
 msgstr ""
 
-#: ../tadv_admin.php:503
+#: ../tadv_admin.php:485
 msgid "Enable pasting of image source"
 msgstr ""
 
-#: ../tadv_admin.php:505
+#: ../tadv_admin.php:487
 msgid ""
 "Works only in Firefox and Safari. These browsers support pasting of images "
 "directly in the editor and convert them to base64 encoded text."
 msgstr ""
 
-#: ../tadv_admin.php:506
+#: ../tadv_admin.php:488
 msgid ""
 "This is not acceptable for larger images like photos or graphics, but may be "
 "useful in some cases for very small images like icons, not larger than 2-3KB."
 msgstr ""
 
-#: ../tadv_admin.php:507
+#: ../tadv_admin.php:489
 msgid "These images will not be available in the Media Library."
 msgstr ""
 
-#: ../tadv_admin.php:513
+#: ../tadv_admin.php:495
 msgid "Administration"
 msgstr ""
 
-#: ../tadv_admin.php:515
+#: ../tadv_admin.php:497
 msgid "Export Settings"
 msgstr ""
 
-#: ../tadv_admin.php:516
+#: ../tadv_admin.php:498
 msgid "Import Settings"
 msgstr ""
 
-#: ../tadv_admin.php:526
+#: ../tadv_admin.php:508
 msgid "Restore Default Settings"
 msgstr ""
 
-#: ../tadv_admin.php:532
+#: ../tadv_admin.php:514
 msgid ""
 "The [Toolbar toggle] button shows or hides the second, third, and forth "
 "button rows. It will only work when it is in the first row and there are "
 "buttons in the second row."
+msgstr ""
+
+#: ../tinymce-advanced.php:180
+#, php-format
+msgid ""
+"TinyMCE Advanced requires WordPress version %1$s or newer. It appears that "
+"you are running %2$s. This can make the editor unstable."
+msgstr ""
+
+#: ../tinymce-advanced.php:187
+#, php-format
+msgid ""
+"Please upgrade your WordPress installation or download an <a href=\"%s"
+"\">older version of the plugin</a>."
 msgstr ""
