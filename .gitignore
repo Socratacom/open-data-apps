@@ -1,14 +1,32 @@
-# Ignore everything in the root except the "wp-content and fonts" directory.
+# Ignore system files and typical project files
+*~
+.DS_Store
+.svn
+.cvs
+*.bak
+*.swp
+Thumbs.db
+
+# Sublime Text
+*.sublime-workspace
+
+# PHPStorm
+*.idea
+
+# Ignore everything in the root except the "wp-content" directory.
 /*
 !.gitignore
-!fonts/
 !wp-content/
- 
+
 # Ignore everything in the "wp-content" directory, except the "plugins" and "themes" directories.
 wp-content/*
 !wp-content/plugins/
 !wp-content/themes/
- 
+
+# Ignore everything in the "plugins" directory, except the plugins you specify
+wp-content/plugins/*
+# !wp-content/plugins/my-plugin
+
 # Ignore everything in the "themes" directory, except the themes you specify
 wp-content/themes/*
 !wp-content/themes/socrata-app-marketplace/
