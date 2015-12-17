@@ -340,3 +340,13 @@
 	font-weight: normal;
 	margin: -1px;
 }
+
+
+
+
+/**
+ * Custom Styles
+ */
+
+.ui-autocomplete { border-radius: 3px; font-size: 13px; }
+.ui-menu .ui-menu-item { float: none; display: block; padding: 0 2px; border-radius: 1px; width: auto; }
