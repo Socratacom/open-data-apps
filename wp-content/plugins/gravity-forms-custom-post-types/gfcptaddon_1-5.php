@@ -89,13 +89,11 @@ if (!class_exists('GFCPTAddon1_5')) {
          */
          function render_field_standard_settings( $position, $form_id ) {
             if( $position == 50 ) {
-                $post_type_args = gf_apply_filters( 'gfcpt_post_type_args', array( $form_id ), array( 'public' => true ), $form_id );
-                $post_types = get_post_types( $post_type_args, 'objects' );
                 ?>
                 <li class="custom_post_type_field_setting field_setting">
                     <label for="field_populate_custom_post_type"><?php _e( 'Post Type', 'gravityforms' ); ?> <?php gform_tooltip("form_field_custom_post_type") ?></label>
                     <select id="field_populate_custom_post_type" onchange="SetFieldProperty('saveAsCPT', jQuery(this).val());">
-                        <?php foreach( $post_types as $post_type ): ?>
+                        <?php foreach( $this->get_post_types( $form_id ) as $post_type ): ?>
                             <option value="<?php echo $post_type->name; ?>" <?php selected( 'post', $post_type->name ); ?>><?php echo $post_type->label; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -119,15 +117,9 @@ if (!class_exists('GFCPTAddon1_5')) {
                     <?php gform_tooltip("form_field_custom_taxonomy") ?><br />
                     <select id="field_populate_taxonomy" onchange="SetFieldProperty('populateTaxonomy', jQuery(this).val());" style="margin-top:10px; display:none;">
                         <option value="" style="color:#999;">Select a Taxonomy</option>
-                    <?php
-                    $args=array(
-                      'public'   => true,
-                      '_builtin' => false
-                    );
-                    $taxonomies = get_taxonomies($args, 'objects');
-                    foreach($taxonomies as $taxonomy): ?>
-                        <option value="<?php echo $taxonomy->name; ?>"><?php echo $taxonomy->label; ?></option>
-                    <?php endforeach; ?>
+                        <?php foreach( $this->get_taxonomies( $form_id ) as $taxonomy ): ?>
+                            <option value="<?php echo $taxonomy->name; ?>"><?php echo $taxonomy->label; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </li>
                 <li class="populate_with_post_type_field_setting field_setting" style="display:list-item;">
@@ -140,11 +132,7 @@ if (!class_exists('GFCPTAddon1_5')) {
                       <select id="field_populate_post_type" onchange="SetFieldProperty('populatePostType', jQuery(this).val());">
                           <option value="" style="color:#999;">Select a Post Type</option>
                       <?php
-                      $args=array(
-                        'public'        => true
-                      );
-                      $post_types = get_post_types($args, 'objects');
-                      foreach($post_types as $post_type): ?>
+                      foreach( $this->get_post_types( $form_id ) as $post_type ): ?>
                           <option value="<?php echo $post_type->name; ?>"><?php echo $post_type->label; ?></option>
                       <?php endforeach; ?>
                       </select>
@@ -164,17 +152,12 @@ if (!class_exists('GFCPTAddon1_5')) {
                     <div style="margin-top:10px; display:none;">
                       <select id="field_save_to_taxonomy" onchange="SetFieldProperty('saveToTaxonomy', jQuery(this).val());">
                           <option value="" style="color:#999;">Select a Taxonomy</option>
-                      <?php
-                      $args=array(
-                        'public'   => true,
-                        '_builtin' => false
-                      );
-                      $taxonomies = get_taxonomies($args, 'objects');
-                      foreach($taxonomies as $taxonomy):
-                          if ($taxonomy->hierarchical === false) {?>
+                      <?php foreach( $this->get_taxonomies( $form_id ) as $taxonomy ):
+                          if ( $taxonomy->hierarchical === false ): ?>
                           <option value="<?php echo $taxonomy->name; ?>"><?php echo $taxonomy->label; ?></option>
-                          <?php } ?>
+                          <?php endif; ?>
                       <?php endforeach; ?>
+
                       </select>
                       <input type="checkbox" class="check_tax_enhanced" onclick="SetFieldProperty('taxonomyEnhanced', this.checked);" id="field_tax_enhanced" />
                       <label for="field_tax_enhanced" class="inline">

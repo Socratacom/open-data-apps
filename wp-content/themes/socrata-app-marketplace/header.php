@@ -45,7 +45,7 @@ if(is_object($wp_google_tag_manager) && is_a($wp_google_tag_manager,"WpGoogleTag
                         </li>
                     </ul> 
 
-                    <a style="margin-top: 13px; padding:8px 40px;" href="/submit-app/" class="hidden-xs btn btn-primary btn-sm pull-right" role="button">Submit Your App</a>
+                    <a style="margin-top: 13px; padding:8px 40px;" href="/submit-app/" class="hidden-xs btn btn-warning btn-sm pull-right" role="button">Submit Your App</a>
 
                 </div><!-- /.navbar-header -->   
             </div> 
