@@ -87,16 +87,13 @@ if (!class_exists('GFCPTAddonBase')) {
                 $input_ids[] = '{input: "'.$input_id.'", taxonomy: "'.$taxonomy.'"}';
               }
               $script_block .= implode(', ', $input_ids);
-              $script_block .= ']};
-';
+              $script_block .= ']};' . "\n";;
             }
 
             if (sizeof($this->_tag_terms)>0) {
-              $script_block .= 'var gfcpt_tag_taxonomies = [];
-';
+              $script_block .= 'var gfcpt_tag_taxonomies = [];' . "\n";
               foreach($this->_tag_terms as $taxonomy => $terms) {
-                $script_block .= 'gfcpt_tag_taxonomies["'.$taxonomy.'"] = ["'.implode('", "', $terms).'"];
-';
+                $script_block .= 'gfcpt_tag_taxonomies["'.$taxonomy.'"] = ["'.implode('", "', $terms).'"];' . "\n";;
               }
             }
             if (strlen($script_block) > 0) {
@@ -364,15 +361,20 @@ if (!class_exists('GFCPTAddonBase')) {
         function load_taxonomy_choices($taxonomy, $type, $first_choice = '', $field ) {
             $choices = array();
 
-            if ($type === 'select') {
-                $terms = $this->load_taxonomy_hierarchical( $taxonomy, $field );
-                if ($first_choice === '' || $first_choice === 'First Choice'){
-                    // if no default option is specified, dynamically create based on taxonomy name
-                    $taxonomy = get_taxonomy($taxonomy);
-                    $choices[] = array('text' => "-- select a {$taxonomy->labels->singular_name} --", 'value' => '');
-                } else {
-                    $choices[] = array('text' => $first_choice, 'value' => '');
-                }
+            if ( in_array( $field->get_input_type(), array( 'select', 'multiselect' ) ) ) {
+
+            	$terms = $this->load_taxonomy_hierarchical( $taxonomy, $field );
+
+	            if( $field->get_input_type() == 'select' ) {
+		            if ( $first_choice === '' || $first_choice === 'First Choice' ) {
+			            // if no default option is specified, dynamically create based on taxonomy name
+			            $taxonomy = get_taxonomy($taxonomy);
+			            $choices[] = array('text' => "-- select a {$taxonomy->labels->singular_name} --", 'value' => '');
+		            } else {
+			            $choices[] = array( 'text' => $first_choice, 'value' => '' );
+		            }
+	            }
+
             } else {
                 $terms = get_terms($taxonomy, 'orderby=name&hide_empty=0');
             }
@@ -472,26 +474,37 @@ if (!class_exists('GFCPTAddonBase')) {
          * Save linked taxonomies for a sinle field
          */
         function save_taxonomy_field( &$field, $entry, $taxonomy ) {
-            if ( array_key_exists( 'type', $field ) && $field['type'] == 'checkbox' ) {
-                $term_ids = array();
-                foreach ( $field['inputs'] as $input ) {
-                    $term_id = (int) $entry[ (string) $input['id'] ];
-                    if ( $term_id > 0 )
-                        $term_ids[] = $term_id;
-                }
-                if ( !empty ( $term_ids ))
-                    wp_set_object_terms( $entry['post_id'], $term_ids, $taxonomy, true );
-            } else if ( array_key_exists( 'type', $field ) && $field['type'] == 'text' ) {
-              $terms = $entry[$field['id']];
-              if ( !empty($terms) )
-                wp_set_post_terms( $entry['post_id'], $terms, $taxonomy );
-            } else {
-                $term_id = (int) $entry[$field['id']];
-                if ( $term_id > 0 )
-                    wp_set_object_terms( $entry['post_id'], $term_id, $taxonomy, true );
-            }
+
+	        $terms = array();
+
+	        switch( $field->get_input_type() ) {
+		        case 'multiselect':
+					$terms = array_map( 'intval', explode( ',', $entry[ $field->id ] ) );
+		        	break;
+		        case 'checkbox':
+
+			        foreach ( $field['inputs'] as $input ) {
+				        $term = (int) $entry[ (string) $input['id'] ];
+				        if ( $term ) {
+					        $terms[] = $term;
+				        }
+			        }
+
+			        break;
+		        case 'text':
+			        $terms = $entry[ $field->id ];
+			        break;
+		        default:
+			        $terms = (int) $entry[ $field->id ];
+	        }
+
+	        if ( ! empty ( $terms ) ) {
+	        	$append_terms = (bool) apply_filters( 'gfcpt_append_terms', true, $field, $entry, $taxonomy );
+	        	$append_terms = (bool) apply_filters( sprintf( 'gfcpt_append_terms_%d', $field->formId ), $append_terms, $field, $entry, $taxonomy );
+	        	$append_terms = (bool) apply_filters( sprintf( 'gfcpt_append_terms_%d_%d', $field->formId, $field->id ), $append_terms, $field, $entry, $taxonomy );
+		        wp_set_object_terms( $entry['post_id'], $terms, $taxonomy, $append_terms );
+	        }
+
         }
     }
 }
-
-?>

@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 2.0.1
+Version: 2.0.6
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -155,7 +155,7 @@ class GFForms {
 	 * @static
 	 * @var string $version The version number
 	 */
-	public static $version = '2.0.1';
+	public static $version = '2.0.6';
 
 
 	/**
@@ -214,8 +214,9 @@ class GFForms {
 		GFCommon::load_gf_text_domain( 'gravityforms' );
 
 		add_filter( 'gform_logging_supported', array( 'RGForms', 'set_logging_supported' ) );
-		add_action( 'admin_head', array( 'GFForms', 'action_admin_head' ) );
-		add_action( 'wp_head', array( 'GFForms', 'action_admin_head' ) );
+		add_action( 'admin_head', array( 'GFCommon', 'maybe_output_gf_vars' ) );
+		add_action( 'admin_head', array( 'GFForms', 'load_admin_bar_styles' ) );
+		add_action( 'wp_head', array( 'GFForms', 'load_admin_bar_styles' ) );
 
 		self::register_scripts();
 
@@ -293,9 +294,10 @@ class GFForms {
 						add_action( 'wp_ajax_gf_get_post_categories', array( 'RGForms', 'get_post_category_values' ) );
 						add_action( 'wp_ajax_gf_get_address_rule_values_select', array( 'GFForms', 'get_address_rule_values_select' ) );
 						add_action( 'wp_ajax_gf_get_notification_post_categories', array( 'RGForms', 'get_notification_post_category_values' ) );
-						add_action( 'wp_ajax_gf_save_confirmation', array( 'RGForms', 'save_confirmation' ) );
+						//add_action( 'wp_ajax_gf_save_confirmation', array( 'RGForms', 'save_confirmation' ) );
 						add_action( 'wp_ajax_gf_delete_confirmation', array( 'RGForms', 'delete_confirmation' ) );
 						add_action( 'wp_ajax_gf_save_new_form', array( 'RGForms', 'save_new_form' ) );
+						add_action( 'wp_ajax_gf_save_title', array( 'RGForms', 'save_form_title' ) );
 
 						//entry list ajax operations
 						add_action( 'wp_ajax_rg_update_lead_property', array( 'RGForms', 'update_lead_property' ) );
@@ -791,22 +793,62 @@ class GFForms {
 		// The gform_longtext_ready option was set in 1.9.x to indicate that the lead details table had been upgraded.
 		// It was also set for new installations of 1.9.x.
 		$is_longtext_ready = (bool) get_option( 'gform_longtext_ready' );
-		if ( ! $is_longtext_ready && version_compare( $previous_version, '2.0-beta-3.2', '<' ) ) {
 
-			// Check the length of the value column in the lead detail table to make sure it's now longtext.
+		if ( $is_longtext_ready ) {
+			return false;
+		}
 
-			$length = $wpdb->get_col_length( $wpdb->prefix . 'rg_lead_detail', 'value' );
+		// The gform_longtext_upgraded option was added by the Upgrade Wizard Support Tool used to help debug upgrade issues.
+		$upgraded = (bool) get_option( 'gform_longtext_upgraded' );
 
-			if ( is_wp_error( $length ) ||  empty( $length ) || ! is_array( $length ) || $length['type'] !== 'byte' || $length['length'] < 4294967295 ) {
+		if ( $upgraded ) {
+			return false;
+		}
 
-				// Something's wrong with the lead detail value column. Log, add a dismissible admin message and bail.
+		// Check the length of the value column in the lead detail table to make sure it's now longtext.
 
-				GFCommon::log_debug( __METHOD__ . '(): lead detail value column issue' );
+		$lead_detail_table_name = GFFormsModel::get_lead_details_table_name();
 
-				GFCommon::add_dismissible_message( esc_html__( 'There appears to be an issue with the Gravity Forms database tables. Please get in touch with support.', 'gravityforms' ), 'gform_long_table_upgrade', 'error', 'gform_full_access', true );
+		$is_longtext = self::check_column( $lead_detail_table_name, 'value', 'longtext' );
 
-				return false;
+		$first_entry_value = $wpdb->get_results( "SELECT value FROM $lead_detail_table_name LIMIT 1" );
+
+		$col_type = $wpdb->get_col_info( 'type', 0 ); // Get type of column from the last wpdb query.
+
+		if ( ! $is_longtext ) {
+			// check_column() might fail - try a different approach.
+			if ( $col_type == '252' || $col_type == 'blob' ) {
+				$is_longtext = true;
 			}
+		}
+
+		if ( ! $is_longtext ) {
+
+			// Something's wrong with the lead detail value column. Log, add a dismissible admin message and bail.
+
+			GFCommon::log_debug( __METHOD__ . '(): lead detail value column issue' );
+
+			GFCommon::add_dismissible_message( esc_html__( 'There appears to be an issue with one of the Gravity Forms database tables. Please get in touch with support.', 'gravityforms' ), 'gform_long_table_upgrade', 'error', 'gform_full_access', true );
+
+			return false;
+		}
+
+		if ( empty( $first_entry_value ) ) {
+			// Make sure previous upgrade failure admin message is removed for sites with no entries.
+			GFCommon::remove_dismissible_message( 'gform_long_table_upgrade' );
+			return false;
+		}
+
+		$can_upgrade = false;
+
+		if ( version_compare( $previous_version, '2.0-beta-3.2', '<' )  // No upgrades have been attempted.
+		     || ( version_compare( $previous_version, '2.0.2.6', '<' ) && ! method_exists( $wpdb, 'get_col_length' ) )          // $wpdb->get_col_length() was introduced in WP 4.2.1. Attempts to upgrade will have caused a fatal error.
+		     || ( version_compare( $previous_version, '2.0.2.6', '<' )  // Some upgrades prior to 2.0.2.6 failed because $wpdb->get_col_length() returned false. e.g. installations using HyperDB
+		          && method_exists( $wpdb, 'get_col_length' )
+		          && $wpdb->get_col_length( $wpdb->prefix . 'rg_lead_detail', 'value' ) === false )
+			|| ( version_compare( $previous_version, '2.0.4.6', '<' ) // Upgrades failed where db layers returned 'blob' as longtext column type.
+				&& $col_type == 'blob' )
+		) {
 
 			// Check that all IDs in the detail table are unique.
 
@@ -816,26 +858,79 @@ FROM {$wpdb->prefix}rg_lead_detail
 GROUP BY id
 HAVING count(*) > 1;");
 
-			if ( count( $results ) > 0 ) {
+			if ( count( $results ) == 0 ) {
 
-				// IDs are not unique - log, add a dismissible admin message and bail.
+				$can_upgrade = true;
+
+			} else {
+
+				// IDs are not unique - log, add a dismissible admin message.
 
 				GFCommon::log_debug( __METHOD__ . '(): lead detail IDs issue' );
 
-				GFCommon::add_dismissible_message( esc_html__( 'There appears to be an issue with the Gravity Forms database tables. Please get in touch with support.', 'gravityforms' ), 'gform_long_table_upgrade', 'error', 'gform_full_access', true );
-
-				return false;
+				GFCommon::add_dismissible_message( esc_html__( 'There appears to be an issue with the data in the Gravity Forms database tables. Please get in touch with support.', 'gravityforms' ), 'gform_long_table_upgrade', 'error', 'gform_full_access', true );
 			}
-
-			$can_upgrade = true;
-		} else {
-
-			$can_upgrade = false;
 		}
 
 		GFCommon::log_debug( __METHOD__ . '(): can_upgrade: ' . $can_upgrade );
 
 		return $can_upgrade;
+	}
+
+	/**
+	 * Check column matches criteria.
+	 *
+	 * Based on the WordPress check_column() function.
+	 *
+	 * @since 2.0.2.6
+	 *
+	 * @static
+	 *
+	 * @global wpdb $wpdb WordPress database abstraction object.
+	 *
+	 * @param string $table_name Table name
+	 * @param string $col_name   Column name
+	 * @param string $col_type   Column type
+	 * @param bool   $is_null    Optional. Check is null.
+	 * @param mixed  $key        Optional. Key info.
+	 * @param mixed  $default    Optional. Default value.
+	 * @param mixed  $extra      Optional. Extra value.
+	 * @return bool True, if matches. False, if not matching.
+	 */
+	private static function check_column( $table_name, $col_name, $col_type, $is_null = null, $key = null, $default = null, $extra = null ) {
+		global $wpdb;
+		$diffs   = 0;
+		$results = $wpdb->get_results( "DESC $table_name" );
+
+		foreach ( $results as $row ) {
+
+			if ( $row->Field == $col_name ) {
+
+				// Got our column, check the params.
+				if ( ( $col_type != null ) && ( $row->Type != $col_type ) ) {
+					++ $diffs;
+				}
+				if ( ( $is_null != null ) && ( $row->Null != $is_null ) ) {
+					++ $diffs;
+				}
+				if ( ( $key != null ) && ( $row->Key != $key ) ) {
+					++ $diffs;
+				}
+				if ( ( $default != null ) && ( $row->Default != $default ) ) {
+					++ $diffs;
+				}
+				if ( ( $extra != null ) && ( $row->Extra != $extra ) ) {
+					++ $diffs;
+				}
+				if ( $diffs > 0 ) {
+					return false;
+				}
+
+				return true;
+			} // end if found our column
+		}
+
+		return false;
 	}
 
 	/**
@@ -862,6 +957,8 @@ UPDATE {$wpdb->prefix}rg_lead_detail d
 INNER JOIN {$wpdb->prefix}rg_lead_detail_long l ON d.id = l.lead_detail_id
 SET d.value = l.value"
 		);
+
+		GFCommon::remove_dismissible_message( 'gform_long_table_upgrade' );
 
 		GFCommon::log_debug( __METHOD__ . '(): result: ' . print_r( $result, true ) );
 	}
@@ -3601,10 +3698,26 @@ SET d.value = l.value"
 	 * @static
 	 * @see GFFormSettings::save_confirmation
 	 */
-	public static function save_confirmation() {
+//	public static function save_confirmation() {
+//		require_once( GFCommon::get_base_path() . '/form_settings.php' );
+//		GFFormSettings::save_confirmation();
+//	}
+
+	/**
+	 * Saves the form title
+	 *
+	 * Called via AJAX
+	 * Passes data off to GFFormSettings::save_form_title
+	 *
+	 * @access public
+	 * @static
+	 * @see GFFormSettings::save_form_title
+	 */
+	public static function save_form_title() {
 		require_once( GFCommon::get_base_path() . '/form_settings.php' );
-		GFFormSettings::save_confirmation();
+		GFFormSettings::save_form_title();
 	}
+
 
 	/**
 	 * Deletes a form confirmation
@@ -3637,6 +3750,102 @@ SET d.value = l.value"
 		GFFormList::save_new_form();
 	}
 
+
+	/**
+	 * Displays the edit title popup
+	 * @access public
+	 * @static
+	 */
+	public static function edit_form_title( $form ){
+
+		//Only allow users with form edit permissions to edit forms
+		if( ! GFCommon::current_user_can_any( 'gravityforms_edit_forms' ) ){
+			return;
+		}
+
+		?>
+
+		<div id="edit-title-container" class="add_field_button_container" >
+			<div class="button-title-link gf_button_title_active">
+				<div id="edit-title-header">
+					<?php esc_html_e( 'Form Title', 'gravityforms' ); ?>
+					<span id="edit-title-close" onclick="GF_CloseEditTitle();"><i class="fa fa-times"></i></span>
+				</div>
+			</div>
+			<div class="add-buttons">
+				<input type="text" id='edit-title-input' value='<?php echo esc_attr( $form['title'] ); ?>'/>
+
+				<div class="edit-form-footer">
+					<input type="button" value="<?php esc_html_e( 'Update', 'gravityforms'); ?>" class="button-primary" onclick="GF_SaveTitle();"/>
+				</div>
+			</div>
+
+		</div>
+		
+		<script type="text/javascript">
+			function GF_ShowEditTitle(){
+				jQuery( '#edit-title-container' ).css( 'visibility', 'visible' );
+			}
+
+			function GF_CloseEditTitle(){
+				jQuery( '#edit-title-container' ).css( 'visibility', 'hidden' );
+			}
+
+			function GF_SaveTitle(){
+				
+				var title = jQuery( '#edit-title-input' ).val();
+				
+				jQuery.post(ajaxurl, {
+						action			: "gf_save_title",
+						gf_save_title	: '<?php echo wp_create_nonce( 'gf_save_title' ); ?>',
+						title			: jQuery.toJSON(title),
+						formId  		: '<?php echo absint( $form['id'] ); ?>'
+					})
+					.done(function( data ) {
+						var is_error = data !== '0';
+						if( is_error ){
+							alert('<?php esc_attr_e('Oops! There was an error saving the form title. Please refresh the page and try again.', 'gravityforms'); ?>');
+						}
+						else{
+							var title = jQuery( '#edit-title-input' ).val();
+							jQuery( '#gform_settings_page_title' ).text( title );
+							jQuery( '#form_title_input').val( title );
+							<?php echo GFCommon::is_form_editor() ? 'form.title = title;' : ''; ?>
+						}
+
+						GF_CloseEditTitle();
+					})
+					.fail(function(){
+						alert('<?php esc_attr_e('Oops! There was an error saving the form title. Please refresh the page and try again.', 'gravityforms'); ?>');
+						GF_CloseEditTitle();
+					});
+
+			}
+
+			function GF_IsOutsideTitleWindow( element ){
+				var parents = jQuery( element ).parents( '#edit-title-container' );
+				return parents.length == 0;
+			}
+
+			jQuery( document ).mousedown( function( event ){
+				if ( GF_IsOutsideTitleWindow( event.target ) ){
+					GF_CloseEditTitle();
+				}
+			});
+
+			jQuery( document ).ready( function(){
+				jQuery( '#edit-title-input' ).keypress( function( event ){
+					if( event.keyCode == 13 ){
+						GF_SaveTitle();
+					}
+				});
+			});
+
+		</script>
+
+		<?php
+	}
+
 	/**
 	 * Displays the form switcher dropdown
 	 *
@@ -3644,7 +3853,7 @@ SET d.value = l.value"
 	 * @static
 	 */
 	public static function form_switcher() {
-		
+
 		// Get all forms.
 		$all_forms = RGFormsModel::get_forms( null, 'title' );
 		
@@ -3657,8 +3866,29 @@ SET d.value = l.value"
 				$forms['inactive'][] = $form;
 			}
 		}
-		
+
+		//Enqueuing chosen script
+		wp_enqueue_script( 'gform_chosen', false, array('jquery'), GFCommon::$version, true );
+
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		wp_enqueue_style( 'gform_chosen', GFCommon::get_base_url() . "/css/chosen{$min}.css", array(), GFCommon::$version );
+
 		?>
+		<a href="#" onclick="GF_SetupChosen( this ); event.stopPropagation();" id='form_switcher_arrow' class='form_switcher_arrow'><i class='fa fa-angle-down'></i></a>
+		<div id="form_switcher_container">
+			<select data-placeholder="<?php esc_attr_e( 'Switch Form', 'gravityforms' ) ?>" name="form_switcher" id="form_switcher" onchange="GF_SwitchForm(jQuery(this).val());" >
+				<option></option>
+				<?php
+				foreach ( $all_forms as $form_info ) {
+					$title = $form_info->title;
+					?>
+					<option value="<?php echo absint( $form_info->id ); ?>"><?php echo esc_html( $title )?></option>
+					<?php
+				}
+				?>
+			</select>
+		</div>
+
 		<script type="text/javascript">
 			function GF_ReplaceQuery(key, newValue) {
 				var new_query = "";
@@ -3720,12 +3950,22 @@ SET d.value = l.value"
 					new_query = GF_RemoveQuery("operator", new_query);
 					new_query = GF_RemoveQuery("type", new_query);
 					new_query = GF_RemoveQuery("field_id", new_query);
+					new_query = GF_RemoveQuery("lid", new_query);
+					new_query = GF_RemoveQuery("filter", new_query);
+					new_query = GF_RemoveQuery("pos", new_query);
 
 					//When switching forms within any form settings tab, go back to main form settings tab
 					var is_form_settings = new_query.indexOf("page=gf_edit_forms") >= 0 && new_query.indexOf("view=settings") >= 0;
 					if (is_form_settings) {
 						//going back to main form settings tab
 						new_query = "page=gf_edit_forms&view=settings&id=" + id;
+					}
+
+					//When switching forms within any form entries tab, go back to main form entries tab
+					var is_form_entries = new_query.indexOf("page=gf_entries") >= 0;
+					if (is_form_entries) {
+						//going back to main form settings tab
+						new_query = "page=gf_entries&id=" + id;
 					}
 
 					document.location = "?" + new_query;
@@ -3736,6 +3976,35 @@ SET d.value = l.value"
 				FieldClick(jQuery('#gform_heading')[0]);
 			}
 
+			function GF_PositionFormSwitcher(){
+
+				var $container = jQuery('#form_switcher_container');
+				var position = jQuery( '#form_switcher_arrow' ).position().left,
+					width    = $container.outerWidth(),
+					offset   = width > position ? 0 : position - width + 20;
+
+				$container.css(  'left', offset + 'px' );
+			}
+
+			function GF_SetupChosen( elem ){
+
+				//displaying container
+				var $container = jQuery('#form_switcher_container');
+				$container.show();
+
+				//initializing and activating chosen
+				var $ch = jQuery('#form_switcher').chosen();
+				$ch.trigger( 'chosen:open' );
+
+				//setting form switcher position
+				GF_PositionFormSwitcher();
+
+				//binding to close event
+				$ch.bind('chosen:hiding_dropdown', function(ch){
+					jQuery('#form_switcher_container').hide();
+				});
+			}
+
 			jQuery(document).ready(function () {
 				if (document.location.search.indexOf("display_settings") > 0)
 					ToggleFormSettings()
@@ -3744,6 +4013,11 @@ SET d.value = l.value"
 					event.preventDefault();
 				});
 			});
+
+			jQuery( window ).resize(function() {
+				GF_PositionFormSwitcher();
+			});
+
 
 		</script>
 		<?php
@@ -4905,11 +5179,16 @@ SET d.value = l.value"
 	 * Outputs the styles for the Forms Toolbar menu.
 	 * Outputs gf vars if required.
 	 *
-	 * @since 2.0
+	 * @since 2.0.1.2
 	 */
-	public static function action_admin_head() {
+	public static function load_admin_bar_styles() {
 
-		if ( ! GFCommon::current_user_can_any( 'gravityforms_edit_forms' ) ) {
+		if ( ! get_option( 'gform_enable_toolbar_menu' ) ) {
+			return;
+		}
+
+		if ( ! GFCommon::current_user_can_any( array( 'gravityforms_edit_forms', 'gravityforms_create_form', 'gravityforms_preview_forms', 'gravityforms_view_entries' ) ) ) {
+			// The current user can't use anything on the menu so bail.
 			return;
 		}
 
@@ -4940,8 +5219,6 @@ SET d.value = l.value"
 			}
 		</style>
 		<?php
-
-		GFCommon::maybe_output_gf_vars();
 
 	}
 }
@@ -5038,12 +5315,16 @@ if ( ! function_exists( 'rgar' ) ) {
 	 * you want to return a specific value if the property is not set.
 	 *
 	 * @param array  $array   Array from which the property's value should be retrieved.
-	 * @param string $prop    Name of the property to be retreived.
+	 * @param string $prop    Name of the property to be retrieved.
 	 * @param string $default Optional. Value that should be returned if the property is not set or empty. Defaults to null.
 	 *
 	 * @return null|string|mixed The value
 	 */
 	function rgar( $array, $prop, $default = null ) {
+
+		if ( ! is_array( $array ) && ! ( is_object( $array ) && $array instanceof ArrayAccess ) ) {
+			return $default;
+		}
 
 		if ( isset( $array[ $prop ] ) ) {
 			$value = $array[ $prop ];
@@ -5063,14 +5344,20 @@ if ( ! function_exists( 'rgars' ) ) {
 	 *
 	 * @param array  $array The array to search in
 	 * @param string $name  The name of the property to find.
+	 * @param string $default Optional. Value that should be returned if the property is not set or empty. Defaults to null.
 	 *
 	 * @return null|string|mixed The value
 	 */
-	function rgars( $array, $name ) {
+	function rgars( $array, $name, $default = null ) {
+
+		if ( ! is_array( $array ) && ! ( is_object( $array ) && $array instanceof ArrayAccess ) ) {
+			return $default;
+		}
+
 		$names = explode( '/', $name );
 		$val   = $array;
 		foreach ( $names as $current_name ) {
-			$val = rgar( $val, $current_name );
+			$val = rgar( $val, $current_name, $default );
 		}
 
 		return $val;
@@ -5203,6 +5490,9 @@ if ( ! function_exists( 'gf_do_action' ) ) {
 	 *
 	 * Allows additional actions based on form and field ID to be defined easily.
 	 *
+	 * @since 1.9.14.20 Modifiers should no longer be passed as a separate parameter.
+	 * @since 1.9.12
+	 *
 	 * @param string $action The action
 	 */
 	function gf_do_action( $action ) {
@@ -5210,23 +5500,23 @@ if ( ! function_exists( 'gf_do_action' ) ) {
 		$args = func_get_args();
 
 		if( is_array( $action ) ) {
-			// func parameters are: $action, $value
+			// Func parameters are: $action, $value
 			$modifiers = array_splice( $action, 1, count( $action ) );
 			$action    = $action[0];
 			$args      = array_slice( $args, 1 );
 		} else {
 			//_deprecated_argument( 'gf_do_action', '1.9.14.20', "Modifiers should no longer be passed as a separate parameter. Combine the action name and modifier(s) into an array and pass that array as the first parameter of the function. Example: gf_do_action( array( 'action_name', 'mod1', 'mod2' ), \$arg1, \$arg2 );" );
-			// func parameters are: $action, $modifier, $value
+			// Func parameters are: $action, $modifier, $value
 			$modifiers = ! is_array( $args[1] ) ? array( $args[1] ) : $args[1];
 			$args      = array_slice( $args, 2 );
 		}
 
-		// add an empty modifier so the base filter will be applied as well
+		// Add an empty modifier so the base filter will be applied as well
 		array_unshift( $modifiers, '' );
 
 		$args = array_pad( $args, 10, null );
 
-		// apply modified versions of filter
+		// Apply modified versions of filter
 		foreach ( $modifiers as $modifier ) {
 			$modifier = empty( $modifier ) ? '' : sprintf( '_%s', $modifier );
 			$action  .= $modifier;

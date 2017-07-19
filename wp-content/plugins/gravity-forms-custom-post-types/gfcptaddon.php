@@ -1,38 +1,13 @@
 <?php
 /*
 Plugin Name: Gravity Forms + Custom Post Types
-Plugin URI: http://themergency.com/plugins/gravity-forms-custom-post-types/
+Plugin URI: http://gravitywiz.com/
 Description: Map your Gravity-Forms-generated posts to a custom post type and/or custom taxonomies.
-Version: 3.1.3
-Author: David Smith
-Author URI: http://gravitywiz.com
+Version: 3.1.5
+Author: spivurno
+Author URI: http://gravitywiz.com/
 License: GPL2
-
-------------------------------------------------------------------------
-Copyright 2011 Themergency
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
-// Include Gravity Forms
-//if (!class_exists('RGForms'))
-//    @include_once(WP_PLUGIN_DIR . '/gravityforms/gravityforms.php');
-//if (!class_exists('RGFormsModel'))
-//    @include_once(WP_PLUGIN_DIR . '/gravityforms/forms_model.php');
-//if (!class_exists('GFCommon'))
-//    @include_once(WP_PLUGIN_DIR . '/gravityforms/common.php');
 
 add_action('init',  array('GFCPTAddon', 'init'), 20);
 add_action('admin_notices', array('GFCPTAddon', 'admin_warnings'), 20);
@@ -41,7 +16,7 @@ class GFCPTAddon {
 
     private static $name = 'Gravity Forms + Custom Post Types';
     private static $slug = 'GFCPTAddon';
-    private static $version = '3.1.3';
+    private static $version = '3.1.5';
     private static $min_gravityforms_version = '1.9.3';
 
     //Plugin starting point. Will load appropriate files

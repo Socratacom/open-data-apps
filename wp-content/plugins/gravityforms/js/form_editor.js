@@ -484,8 +484,8 @@ function InitializeForm(form){
     }
     TogglePostTitleTemplate(true);
 
-    jQuery("#gform_last_page_settings").bind("click keypress", function(){FieldClick(this);});
-    jQuery("#gform_pagination").bind("click keypress", function(){FieldClick(this);});
+    jQuery("#gform_last_page_settings").bind("click", function(){FieldClick(this);});
+    jQuery("#gform_pagination").bind("click", function(){FieldClick(this);});
     jQuery(".gfield").bind("click", function(){FieldClick(this);});
 
     var paginationType = form["pagination"] && form["pagination"]["type"] ? form["pagination"]["type"] : "percentage";
@@ -1219,7 +1219,7 @@ function UpdateAddressFields(){
 
     if(hide_country){
         jQuery('.field_selected #input_' + field.id + '_6_container').hide();
-        jQuery('.field_selected .field_custom_input_row_input_' + field.id + '_6').hide();
+        jQuery('.field_custom_input_row_input_' + field.id + '_6').hide();
     } else {
         //selects default country and displays drop down
         jQuery(".field_selected #input_" + field.id + "_6").val(jQuery("#field_address_default_country_" + addressType).val());

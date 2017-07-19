@@ -1607,8 +1607,10 @@ class GFFormSettings {
 		/**
 		 * Fires right before the confirmation that a form is deleted
 		 *
+		 * @since 1.9
+		 *
 		 * @param int   $form['confirmations'][ $confirmation_id ] The delete confirmation object ID
-		 * @para  array $form                                      The Form object
+		 * @param array $form                                      The Form object
 		 */
 		do_action( 'gform_pre_confirmation_deleted', $form['confirmations'][ $confirmation_id ], $form );
 
@@ -1763,6 +1765,19 @@ class GFFormSettings {
 			$unsafe = true;
 		}
 		return $unsafe;
+	}
+	
+	public static function save_form_title(){
+
+		check_admin_referer( 'gf_save_title', 'gf_save_title' );
+
+		$form_title = json_decode( rgpost( 'title' ) );
+		$form_id = rgpost( 'formId' );
+
+		$form = GFAPI::get_form( $form_id );
+		$form['title'] = $form_title;
+
+		GFAPI::update_form( $form, $form_id );
 	}
 }
 

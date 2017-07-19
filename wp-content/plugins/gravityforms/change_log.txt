@@ -1,4 +1,75 @@
 ------------------------------------------------------------------------------------------------------------------
+Version 2.0.6
+    - Fixed a JS error which could occur when conditional logic was based on a calculation result.
+    - Fixed an issue where the form title could revert back to the previous title if the update form button is used in the form editor after using the form title editor.
+
+------------------------------------------------------------------------------------------------------------------
+Version 2.0.5
+    - Added debug statements for troubleshooting uploads.
+	- Fixed an issue with the upgrade process for some database configurations.
+    - Fixed an issue with the location of the js gf_get_field_number_format function.
+    - Fixed an issue in the form editor when using Firefox which prevented the field from opening for editing when clicking on a field input.
+    - Fixed an issue where an upgrade error admin notice is displayed unnecessarily when the database upgrade is complete but there are no entries to migrate.
+    - Fixed issue with conditional logic dependent on any Pricing field.
+    - Fixed an issue with the capability required to access the import forms tab.
+
+    - AF: Fixed PHP notice when using a save callback on a plugin or feed settings field.
+
+------------------------------------------------------------------------------------------------------------------
+Version 2.0.4
+    - Added support for the "urlencode" modifier on the field merge tag e.g. {File:5:urlencode}.
+    - Added support for using the fileupload field "download" modifier with the {all_fields} merge tag.
+	- Added gform_export_max_execution_time filter to allow the max execution time for exports to be changed.
+    - Added the gform_default_address_type filter for overriding the default address type for new fields.
+    - Updated rgar() and rgars() to support object with ArrayAccess.
+	- Updated inline form title editor so that only users with form edit permissions can change form title.
+	- Fixed a conflict between the Partials Entries Add-On and the Payment Add-Ons that would cause payments to be captured before the submit button was clicked.
+    - Fixed an issue preventing the completion of the installation wizard on some sites.
+	- Fixed issue with calculation rounding.
+	- Fixed issue where inputs-specific conditional logic was not correctly evaluated on submission.
+    - Fixed fatal error which could occur on the entry list page.
+    - Fixed a fatal error which could occur in some situations when cleaning currency formatted values.
+	- Fixed an issue with entry export for some installations that use alternative stream wrappers for writing to the uploads folder e.g. S3.
+	- Fixed issue with conditional logic on different number formats.
+    - Fixed an issue with the Address field in the form editor.
+    - Fixed {all_fields} merge tag converting field label characters to HTML entities when using the text format.
+
+------------------------------------------------------------------------------------------------------------------
+Version 2.0.3
+	- Added support for [embed] shortcode for HTML fields.
+	- Added form switcher to entry detail view.
+	- Added the "download" modifier to the fileupload field merge tag to force the file to be downloaded instead of opened in the browser.
+	- Added the gform_secure_file_download_location filter to allow the file security to be bypassed. Not recommended - use with caution.
+	- Added form title edit popup so that form title can be edited from any form page.
+	- Added new form switcher.
+	- Updated create form popup so that the form can be created by pressing the "enter" key while on the title input.
+    - Updated the error messages for upgrade issues.
+    - Fixed issues the gform_entries_column_filter and gform_entries_column hooks.
+	- Fixed issue with entry export.
+	- Fixed issue with gform_entries_first_column hook.
+	- Fixed an issue with the validation of the notification reply-to and bcc fields.
+	- Fixed issue with conditional logic when using translations that change number formatting.
+	- Fixed issue causing form to be submitted on any key press when button had focus.
+	- Fixed issue saving background updates setting in installation wizard.
+	- Fixed issues with sales graph.
+    - Fixed issues with {pricing_fields} markup.
+	- Fixed an issue with the upgrade process from 1.9 to 2.0 for some installations with the HyperDB plugin configured.
+	- Fixed issue where long custom meta keys caused Custom Field Name select to break out of field settings container.
+	- Fixed an issue with the upgrade process from 1.9 to 2.0.
+	- Fixed an issue with the download of files uploaded by the file upload field. Files now open in the browser by default. Add the dl=1 URL param to force the download.
+	- Fixed an issue with the gform_is_value_match filter parameters which could occur when evaluating rules based on entry meta.
+    - Fixed issue where gf_is_match() was selecting incorrect inputs for matching.
+	- AF: Implemented pre-defined field mapping to automatically select matching fields when creating feeds.
+
+------------------------------------------------------------------------------------------------------------------
+Version 2.0.2
+    - Fixed an issue with the notifications meta box on the entry detail page not displaying the result messages.
+    - Fixed an issue where the start and end paging fields would close in form editor upon keypress within a setting.
+    - Fixed an issue where the entry search UI doesn't appear in the entry list for users without the gravityforms_edit_forms capability.
+    - Fixed issue where non-input-specific conditional logic would fail on forms where field IDs "overlapped" (i.e. 10 & 100, 9 & 90)
+	- Fixed styling issues.
+
+------------------------------------------------------------------------------------------------------------------
 Version 2.0.1
     - Added the gform_process_template_shortcodes_pre_create_post filter. See https://www.gravityhelp.com/documentation/article/gform_process_template_shortcodes_pre_create_post/
     - Updated reCAPTCHA settings to force user to use reCAPTCHA widget to validate reCAPTCHA keys.

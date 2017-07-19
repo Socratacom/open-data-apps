@@ -7,7 +7,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 class GFFormDisplay {
 
 	public static $submission = array();
-	private static $init_scripts = array();
+	public static $init_scripts = array();
 
 	const ON_PAGE_RENDER       = 1;
 	const ON_CONDITIONAL_LOGIC = 2;
@@ -296,6 +296,7 @@ class GFFormDisplay {
 	private static function upload_files( $form, $files ) {
 
 		$form_upload_path = GFFormsModel::get_upload_path( $form['id'] );
+		GFCommon::log_debug( "GFFormDisplay::upload_files(): Upload path {$form_upload_path}" );
 
 		//Creating temp folder if it does not exist
 		$target_path = $form_upload_path . '/tmp/';
@@ -311,8 +312,18 @@ class GFFormDisplay {
 				continue;
 			}
 
-			if ( $field->failed_validation || empty( $_FILES[ $input_name ]['name'] ) ) {
+			/*if ( $field->failed_validation || empty( $_FILES[ $input_name ]['name'] ) ) {
 				GFCommon::log_debug( "GFFormDisplay::upload_files(): Skipping field: {$field->label}({$field->id} - {$field->type})." );
+				continue;
+			}*/
+
+			if ( $field->failed_validation ) {
+				GFCommon::log_debug( "GFFormDisplay::upload_files(): Skipping field because it failed validation: {$field->label}({$field->id} - {$field->type})." );
+				continue;
+			}
+
+			if ( empty( $_FILES[ $input_name ]['name'] ) ) {
+				GFCommon::log_debug( "GFFormDisplay::upload_files(): Skipping field because " . $_FILES[ $input_name ]['name'] . " could not be found: {$field->label}({$field->id} - {$field->type})." );
 				continue;
 			}
 
@@ -1024,7 +1035,7 @@ class GFFormDisplay {
 
 			//show progress bar on confirmation
 			if ( $start_at_zero && $has_pages && ! $is_admin && ( $form['confirmation']['type'] == 'message' && $form['pagination']['type'] == 'percentage' ) ) {
-				$progress_confirmation = self::get_progress_bar( $form, $current_page, $confirmation_message );
+				$progress_confirmation = self::get_progress_bar( $form, 0, $confirmation_message );
 				if ( $ajax ) {
 					$progress_confirmation = apply_filters( 'gform_ajax_iframe_content', "<!DOCTYPE html><html><head><meta charset='UTF-8' /></head><body class='GF_AJAX_POSTBACK'>" . $progress_confirmation . '</body></html>' );
 				}
@@ -1088,8 +1099,10 @@ class GFFormDisplay {
 
 		$input_type = 'submit';
 
+		$do_submit = "jQuery(\"#gform_{$form_id}\").trigger(\"submit\",[true]);";
+
 		if ( ! empty( $target_page_number ) ) {
-			$onclick    = "onclick='jQuery(\"#gform_target_page_number_{$form_id}\").val(\"{$target_page_number}\"); {$onclick} jQuery(\"#gform_{$form_id}\").trigger(\"submit\",[true]); ' onkeypress='jQuery(\"#gform_target_page_number_{$form_id}\").val(\"{$target_page_number}\"); {$onclick} jQuery(\"#gform_{$form_id}\").trigger(\"submit\",[true]); '";
+			$onclick    = "onclick='jQuery(\"#gform_target_page_number_{$form_id}\").val(\"{$target_page_number}\"); {$onclick} {$do_submit} ' onkeypress='if( event.keyCode == 13 ){ jQuery(\"#gform_target_page_number_{$form_id}\").val(\"{$target_page_number}\"); {$onclick} {$do_submit} } '";
 			$input_type = 'button';
 		} else {
 			// prevent multiple form submissions when button is pressed multiple times
@@ -1099,9 +1112,9 @@ class GFFormDisplay {
 				$set_submitting = "window[\"gf_submitting_{$form_id}\"]=true;";
 			}
 
-			$onclick_submit = $button['type'] == 'link' ? "jQuery(\"#gform_{$form_id}\").trigger(\"submit\",[true]);" : '';
+			$onclick_submit = $button['type'] == 'link' ? $do_submit : '';
 
-			$onclick = "onclick='if(window[\"gf_submitting_{$form_id}\"]){return false;}  {$set_submitting} {$onclick} {$onclick_submit}' onkeypress='if(window[\"gf_submitting_{$form_id}\"]){return false;} {$set_submitting} {$onclick} jQuery(\"#gform_{$form_id}\").trigger(\"submit\",[true]);'";
+			$onclick = "onclick='if(window[\"gf_submitting_{$form_id}\"]){return false;}  {$set_submitting} {$onclick} {$onclick_submit}' onkeypress='if( event.keyCode == 13 ){ if(window[\"gf_submitting_{$form_id}\"]){return false;} {$set_submitting} {$onclick} {$do_submit} }'";
 		}
 
 		if ( rgar( $button, 'type' ) == 'text' || rgar( $button, 'type' ) == 'link' || empty( $button['imageUrl'] ) ) {
@@ -2380,28 +2393,34 @@ class GFFormDisplay {
 		foreach ( $form['fields'] as $field ) {
 
 			// default format is false, fields with no format will inherit the format of the formula field when calculated
-			$format = false;
+			// price format is specified for product fields, value format is specified number fields; used in conditional
+			// logic to determine if field or rule value should be formatted
+			$price_format = false;
+			$value_format = false;
 
 			switch ( GFFormsModel::get_input_type( $field ) ) {
 				case 'number':
-					$format = $field->numberFormat ? $field->numberFormat : 'decimal_dot';
+					$value_format = $field->numberFormat ? $field->numberFormat : 'decimal_dot';
 					break;
 				case 'singleproduct':
 				case 'calculation':
 				case 'price':
 				case 'hiddenproduct':
 				case 'singleshipping':
-					$format = $currency['decimal_separator'] == ',' ? 'decimal_comma' : 'decimal_dot';
+					$price_format = $currency['decimal_separator'] == ',' ? 'decimal_comma' : 'decimal_dot';
 					break;
 				default:
 
 					// we check above for all single-input product types, for all other products, assume decimal format
 					if ( in_array( $field->type, array( 'product', 'option', 'shipping' ) ) ) {
-						$format = 'decimal_dot';
+						$price_format = 'decimal_dot';
 					}
 			}
 
-			$number_formats[ $field->id ] = $format;
+			$number_formats[ $field->id ] = array(
+				'price' => $price_format,
+				'value' => $value_format
+			);
 
 		}
 
@@ -2740,6 +2759,7 @@ class GFFormDisplay {
 
 	public static function get_progress_bar( $form, $page, $confirmation_message = '' ) {
 
+		$form_id           = $form['id'];
 		$progress_complete = false;
 		$progress_bar      = '';
 		$page_count        = self::get_max_page_number( $form );
@@ -2771,7 +2791,7 @@ class GFFormDisplay {
 
 
 		$progress_bar .= "
-        <div id='gf_progressbar_wrapper_{$form['id']}' class='gf_progressbar_wrapper'>
+        <div id='gf_progressbar_wrapper_{$form_id}' class='gf_progressbar_wrapper'>
             <h3 class='gf_progressbar_title'>";
 		$progress_bar .= ! $progress_complete ? esc_html__( 'Step', 'gravityforms' ) . " {$current_page} " . esc_html__( 'of', 'gravityforms' ) . " {$page_count}{$page_name}" : "{$page_name}";
 		$progress_bar .= "
@@ -2793,8 +2813,8 @@ class GFFormDisplay {
 		 *
 		 * @see   https://www.gravityhelp.com/documentation/article/gform_progress_bar/
 		 */
-		$progress_bar = apply_filters( 'gform_progress_bar',               $progress_bar, $form, $confirmation_message );
-		$progress_bar = apply_filters( "gform_progress_bar_{$form['id']}", $progress_bar, $form, $confirmation_message );
+		$progress_bar = apply_filters( 'gform_progress_bar', $progress_bar, $form, $confirmation_message );
+		$progress_bar = apply_filters( "gform_progress_bar_{$form_id}", $progress_bar, $form, $confirmation_message );
 
 		return $progress_bar;
 	}
@@ -2989,6 +3009,16 @@ class GFFormDisplay {
 		$resume_token = sanitize_key( $resume_token );
 		$form_id = intval( $form['id'] );
 
+		/**
+		 * Filters the 'Save and Continue' URL to be used with a partial entry submission.
+		 *
+		 * @since 1.9
+		 *
+		 * @param string $resume_url   The URL to be used to resume the partial entry.
+		 * @param array  $form         The Form Object.
+		 * @param string $resume_token The token that is used within the URL.
+		 * @param string $email        The email address associated with the partial entry.
+		 */
 		$resume_url  = apply_filters( 'gform_save_and_continue_resume_url', add_query_arg( array( 'gf_token' => $resume_token ), GFFormsModel::get_current_page_url() ), $form, $resume_token, $email );
 		$resume_url  = esc_url( $resume_url );
 		$resume_link = "<a href=\"{$resume_url}\" class='resume_form_link'>{$resume_url}</a>";

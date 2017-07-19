@@ -454,7 +454,7 @@ class GFEntryDetail {
 				var sendTo = jQuery('#notification_override_email').val();
 
 				if (selectedNotifications.length <= 0) {
-					displayMessage(<?php echo json_encode( __( 'You must select at least one type of notification to resend.', 'gravityforms' ) ); ?>, 'error', '#notifications_container');
+					displayMessage(<?php echo json_encode( __( 'You must select at least one type of notification to resend.', 'gravityforms' ) ); ?>, 'error', '#notifications');
 					return;
 				}
 
@@ -470,9 +470,9 @@ class GFEntryDetail {
 					},
 					function (response) {
 						if (response) {
-							displayMessage(response, "error", "#notifications_container");
+							displayMessage(response, "error", "#notifications");
 						} else {
-							displayMessage(<?php echo json_encode( esc_html__( 'Notifications were resent successfully.', 'gravityforms' ) ); ?>, "updated", "#notifications_container" );
+							displayMessage(<?php echo json_encode( esc_html__( 'Notifications were resent successfully.', 'gravityforms' ) ); ?>, "updated", "#notifications" );
 
 							// reset UI
 							jQuery(".gform_notifications").attr( 'checked', false );
@@ -511,7 +511,9 @@ class GFEntryDetail {
 			}
 
 		</script>
-
+		<?php
+		$editable_class = GFCommon::current_user_can_any( 'gravityforms_edit_forms' ) ? ' gform_settings_page_title_editable' : '';
+		?>
 		<form method="post" id="entry_form" enctype='multipart/form-data'>
 			<?php wp_nonce_field( 'gforms_save_entry', 'gforms_save_entry' ) ?>
 			<input type="hidden" name="action" id="action" value="" />
@@ -521,7 +523,8 @@ class GFEntryDetail {
 
 			<div class="wrap gf_entry_wrap">
 				<h2 class="gf_admin_page_title">
-					<span><?php echo esc_html( rgar( $form, 'title' ) ); ?></span>
+					<span id='gform_settings_page_title' class='gform_settings_page_title<?php echo $editable_class?>' onclick='GF_ShowEditTitle()'><?php echo esc_html( rgar( $form, 'title' ) ); ?></span>
+					<?php GFForms::form_switcher(); ?>
 					<?php if ( isset( $_GET['pos'] ) ) { ?>
 						<div class="gf_entry_detail_pagination">
 							<ul>
@@ -535,13 +538,14 @@ class GFEntryDetail {
 					<?php } ?>
 
 					<span class="gf_admin_page_subtitle">
-				<span class="gf_admin_page_formid">ID: <?php echo absint( $form['id'] ); ?></span>
-			</span>
+						<span class="gf_admin_page_formid">ID: <?php echo absint( $form['id'] ); ?></span>
+					</span>
 
 					<?php
 					$gf_entry_locking = new GFEntryLocking();
 					$gf_entry_locking->lock_info( $lead_id ); ?>
 				</h2>
+				<?php GFForms::edit_form_title( $form ); ?>
 
 				<?php GFCommon::display_dismissible_message(); ?>
 
@@ -866,6 +870,15 @@ class GFEntryDetail {
 				<th id="details">
 					<?php
 					$title = sprintf( '%s : %s %s', esc_html( $form['title'] ), esc_html__( 'Entry # ', 'gravityforms' ), absint( $lead['id'] ) );
+					/**
+					 * Filters the title displayed on the entry detail page.
+					 *
+					 * @since 1.9
+					 *
+					 * @param string $title The title used.
+					 * @param array  $form  The Form Object.
+					 * @param array  $entry The Entry Object.
+					 */
 					echo apply_filters( 'gform_entry_detail_title', $title, $form, $lead );
 					?>
 				</th>

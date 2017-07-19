@@ -46,6 +46,7 @@ function Currency(currency){
             number = parseFloat(number.substr(1));
 			negative = '-';
         }
+
         money = this.numberFormat(number, this.currency["decimals"], this.currency["decimal_separator"], this.currency["thousand_separator"]);
 
 		if ( money == '0.00' ){
@@ -74,11 +75,17 @@ function Currency(currency){
         };
 
         if(decimals == '0') {
+
+            n = n + 0.0000000001; // getting around floating point arithmetic issue when rounding. ( i.e. 4.005 is represented as 4.004999999999 and gets rounded to 4.00 instead of 4.01 )
+
             s = ('' + Math.round(n)).split('.');
         } else
         if(decimals == -1) {
             s = ('' + n).split('.');
         } else {
+
+            n = n + 0.0000000001; // getting around floating point arithmetic issue when rounding. ( i.e. 4.005 is represented as 4.004999999999 and gets rounded to 4.00 instead of 4.01 )
+
             // Fix for IE parseFloat(0.55).toFixed(0) = 0;
             s = toFixedFix(n, prec).split('.');
         }
@@ -426,7 +433,7 @@ function gformGetProductQuantity(formId, productFieldId) {
             var htmlId = quantityInput.attr('id'),
                 fieldId = gf_get_input_id_by_html_id(htmlId);
 
-            numberFormat = gf_global.number_formats[formId][fieldId];
+            numberFormat = gf_get_field_number_format( fieldId, formId, 'value' );
         }
 
     }
@@ -923,7 +930,7 @@ var GFCalc = function(formId, formulaFields){
         // allow result to be custom formatted
         var formattedResult = gform.applyFilters( 'gform_calculation_format_result', false, result, formulaField, formId, calcObj );
 
-        var numberFormat = gf_global.number_formats[formId][formulaField.field_id];
+        var numberFormat = gf_get_field_number_format(formulaField.field_id, formId);
 
         //formatting number
         if( formattedResult !== false) {
@@ -1056,9 +1063,9 @@ var GFCalc = function(formId, formulaFields){
 
             }
 
-            var numberFormat = gf_global.number_formats[formId][fieldId];
+            var numberFormat = gf_get_field_number_format( fieldId, formId );
             if( ! numberFormat )
-                numberFormat = gf_global.number_formats[formId][formulaField.field_id];
+                numberFormat = gf_get_field_number_format( formulaField.field_id, formId );
 
             var decimalSeparator = gformGetDecimalSeparator(numberFormat);
 
@@ -1125,6 +1132,24 @@ function getMatchGroups(expr, patt) {
     return matches;
 }
 
+function gf_get_field_number_format(fieldId, formId, context) {
+
+    var fieldNumberFormats = rgars(window, 'gf_global/number_formats/{0}/{1}'.format(formId, fieldId)),
+        format = false;
+
+    if (fieldNumberFormats === '') {
+        return format;
+    }
+
+    if (typeof context == 'undefined') {
+        format = fieldNumberFormats.price !== false ? fieldNumberFormats.price : fieldNumberFormats.value;
+    } else {
+        format = fieldNumberFormats[context];
+    }
+
+    return format;
+}
+
 
 //----------------------------------------
 //------ JAVASCRIPT HOOK FUNCTIONS -------
@@ -1158,7 +1183,11 @@ var gform = {
 		if ( undefined == tag ) {
 			tag = action + '_' + hooks.length;
 		}
-		gform.hooks[hookType][action].push( { tag:tag, callable:callable, priority:priority } );
+        if( priority == undefined ){
+            priority = 10;
+        }
+
+        gform.hooks[hookType][action].push( { tag:tag, callable:callable, priority:priority } );
 	},
 	doHook: function( hookType, action, args ) {
 

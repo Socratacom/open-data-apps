@@ -1031,6 +1031,8 @@ class GFFormsModel {
 			/**
 			 * Fires after an inactive form gets marked as active
 			 *
+			 * @since 1.9
+			 *
 			 * @param int $form_id The Form ID used to specify which form to activate
 			 */
 			do_action( 'gform_post_form_activated', $form_id );
@@ -1038,6 +1040,8 @@ class GFFormsModel {
 			
 			/**
 			 * Fires after an active form gets marked as inactive
+			 *
+			 * @since 1.9
 			 *
 			 * @param int $form_id The Form ID used to specify which form to activate
 			 */
@@ -1355,6 +1359,8 @@ class GFFormsModel {
 		/**
 		 * Fires after a form is trashed
 		 *
+		 * @since 1.9
+		 *
 		 * @param int $form_id The ID of the form that was trashed
 		 */
 		do_action( 'gform_post_form_trashed', $form_id );
@@ -1376,6 +1382,8 @@ class GFFormsModel {
 
         /**
          * Fires after a form is restored from trash
+         *
+         * @since 1.9
          *
          * @param int $form_id The ID of the form that was restored
          */
@@ -1513,7 +1521,14 @@ class GFFormsModel {
 		// Default field types to delete
 		$field_types = array( 'fileupload', 'post_image' );
 
-		// Allow adding more file types to delete
+		/**
+		 * Allows more files to be deleted
+		 *
+		 * @since 1.9.10
+		 *
+		 * @param array $field_types Field types which contain file uploads
+		 * @param array $form        The Form Object
+		 */
 		$field_types = gf_apply_filters( array( 'gform_field_types_delete_files', $form['id'] ), $field_types, $form );
 
 		$fields = self::get_fields_by_type( $form, $field_types );
@@ -1545,7 +1560,14 @@ class GFFormsModel {
 		// Default field types to delete
 		$field_types = array( 'fileupload', 'post_image' );
 
-		// Allow adding more file types to delete
+		/**
+		 * Allows more files to be deleted
+		 *
+		 * @since 1.9.10
+		 *
+		 * @param array $field_types Field types which contain file uploads
+		 * @param array $form        The Form Object
+		 */
 		$field_types = gf_apply_filters( array( 'gform_field_types_delete_files', $form_id ), $field_types, $form );
 
 
@@ -2373,11 +2395,15 @@ class GFFormsModel {
 			return 'show';
 		}
 
-
 		$match_count = 0;
 		foreach ( $logic['rules'] as $rule ) {
 			$source_field = RGFormsModel::get_field( $form, $rule['fieldId'] );
 			$field_value  = empty( $lead ) ? self::get_field_value( $source_field, $field_values ) : self::get_lead_field_value( $lead, $source_field );
+
+			// if rule fieldId is input specific, get the specified input's value
+			if( is_array( $field_value ) && isset( $field_value[ $rule['fieldId'] ] ) ) {
+				$field_value = rgar( $field_value, $rule['fieldId'] );
+			}
 
 			$is_value_match = self::is_value_match( $field_value, $rule['value'], $rule['operator'], $source_field, $rule, $form );
 
@@ -2485,6 +2511,14 @@ class GFFormsModel {
 			$submitted_values[ $field->id ] = RGFormsModel::get_field_value( $field, $field_values );
 		}
 
+		/**
+		 * Allows the modification of submitted values before the incomplete submission is saved.
+		 *
+		 * @since 1.9
+		 *
+		 * @param array $submitted_values The submitted values
+		 * @param array $form             The Form object
+		 */
 		$submitted_values = apply_filters( 'gform_submission_values_pre_save', $submitted_values, $form );
 
 		$submission['submitted_values'] = $submitted_values;
@@ -2548,6 +2582,8 @@ class GFFormsModel {
 
         /**
          * Fires after an incomplete submission is saved
+         *
+         * @since 1.9
          *
          * @param array  $submission   Contains the partially submitted entry, fields, values, and files.
          * @param string $resume_token The unique resume token that was generated for this partial submission
@@ -2653,10 +2689,12 @@ class GFFormsModel {
 					/**
 					 * Allow modification of the delimiter used to parse List field URL parameters.
 					 *
-					 * $delimiter Defaults to '|';
-					 * $field GF_Field object for the current field.
-					 * $name Name of the current dynamic population parameter.
-					 * $field_values Array of values provided for pre-population into the form.
+					 * @since 2.0.0
+					 *
+					 * @param string $delimiter    Defaults to '|';
+					 * @param array  $field        GF_Field object for the current field.
+					 * @param string $name         Name of the current dynamic population parameter.
+					 * @param array  $field_values Array of values provided for pre-population into the form.
 					 */
 					$delimiter = apply_filters( 'gform_list_field_parameter_delimiter', '|', $field, $name, $field_values );
 					$ary_rows = array_merge( $ary_rows, rgexplode( $delimiter, $row, $column_count ) );
@@ -3035,6 +3073,7 @@ class GFFormsModel {
 		$form_unique_id = self::get_form_unique_id( $form_id );
 		$pathinfo       = pathinfo( $uploaded_filename );
 
+		GFCommon::log_debug( 'Uploaded filename is ' . $uploaded_filename . ' and temporary filename is ' . $form_unique_id . '_' . $input_name . '.' . $pathinfo['extension'] );
 		return array( 'uploaded_filename' => $uploaded_filename, 'temp_filename' => "{$form_unique_id}_{$input_name}.{$pathinfo['extension']}" );
 
 	}
@@ -3148,34 +3187,38 @@ class GFFormsModel {
 		add_post_meta( $post_id, '_gform-form-id', $form['id'] );
 		add_post_meta( $post_id, '_gform-entry-id', $lead['id'] );
 
-		//creating post images
-		GFCommon::log_debug( 'GFFormsModel::create_post(): Creating post images.' );
 		$post_images = array();
-		foreach ( $post_data['images'] as $image ) {
-			$image_meta = array(
-				'post_excerpt' => $image['caption'],
-				'post_content' => $image['description'],
-			);
+		if ( ! empty( $post_data['images'] ) ) {
+			// Creating post images.
+			GFCommon::log_debug( 'GFFormsModel::create_post(): Creating post images.' );
 
-			//adding title only if it is not empty. It will default to the file name if it is not in the array
-			if ( ! empty( $image['title'] ) ) {
-				$image_meta['post_title'] = $image['title'];
-			}
+			foreach ( $post_data['images'] as $image ) {
+				$image_meta = array(
+					'post_excerpt' => $image['caption'],
+					'post_content' => $image['description'],
+				);
 
-			if ( ! empty( $image['url'] ) ) {
-				GFCommon::log_debug( 'GFFormsModel::create_post(): Adding image: ' . $image['url'] );
-				$media_id = self::media_handle_upload( $image['url'], $post_id, $image_meta );
+				// Adding title only if it is not empty. It will default to the file name if it is not in the array.
+				if ( ! empty( $image['title'] ) ) {
+					$image_meta['post_title'] = $image['title'];
+				}
 
-				if ( $media_id ) {
+				if ( ! empty( $image['url'] ) ) {
+					GFCommon::log_debug( 'GFFormsModel::create_post(): Adding image: ' . $image['url'] );
+					$media_id = self::media_handle_upload( $image['url'], $post_id, $image_meta );
 
-					//save media id for post body/title template variable replacement (below)
-					$post_images[ $image['field_id'] ] = $media_id;
-					$lead[ $image['field_id'] ] .= "|:|$media_id";
+					if ( $media_id ) {
 
-					// set featured image
-					$field = RGFormsModel::get_field( $form, $image['field_id'] );
-					if ( $field->postFeaturedImage ) {
-						set_post_thumbnail( $post_id, $media_id );
+						// Save media id for post body/title template variable replacement (below).
+						$post_images[ $image['field_id'] ] = $media_id;
+						$lead[ $image['field_id'] ] .= "|:|$media_id";
+
+						// Setting the featured image.
+						$field = RGFormsModel::get_field( $form, $image['field_id'] );
+						if ( $field->postFeaturedImage ) {
+							$result = set_post_thumbnail( $post_id, $media_id );
+							GFCommon::log_debug( __METHOD__ . '(): Setting the featured image. Result from set_post_thumbnail(): ' . var_export( $result, 1 ) );
+						}
 					}
 				}
 			}
