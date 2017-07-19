@@ -2,8 +2,8 @@
 Contributors: elliotcondon
 Tags: custom, field, custom field, advanced, simple fields, magic fields, more fields, repeater, matrix, post, type, text, textarea, file, image, edit, admin
 Requires at least: 3.5.0
-Tested up to: 4.5.0
-Stable tag: 4.4.8
+Tested up to: 4.8.0
+Stable tag: 4.4.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,6 +115,18 @@ http://support.advancedcustomfields.com/
 
 
 == Changelog ==
+
+= 4.4.11 =
+* Core: Improved logic to better delete term meta during 'delete_term' action
+* Core: Fixed bug causing potential conflict between user and post object cache names
+* Language: Updated Italian translation - thanks to Ste Yeu
+
+= 4.4.10 =
+* WYSIWYG field: Fixed JS error preventing tinymce from initializing
+
+= 4.4.9 =
+* Image field: Added nicer 'Edit image' view
+* File field: Added nicer 'Edit file' view
 
 = 4.4.8 =
 * Google Map: Added new 'acf/fields/google_map/api' filter
@@ -777,7 +789,7 @@ http://support.advancedcustomfields.com/
 * Added new French translation. Thanks to Martin Vauchel @littlbr http://littleboyrunning.com
 * Fixed duplicate WYSIWYG in chrome bug
 * New Location rules: add fields to a user / taxonomy / attachment
-* Bug Fix: Color picker now shows color on page load. Thanks to Kev http://www.popcreative.co.uk
+* Bug Fix: Color picker now shows color on page load. Thanks to Kevin Ruscoe http://github.com/kevdotbadger"
 * CSS tweaks File clearfix, new style for selects with optgroups
 * Simplified get_value to return default value if value == ""
 * API now allows for "option" and "options" for the $post_id value in API functions

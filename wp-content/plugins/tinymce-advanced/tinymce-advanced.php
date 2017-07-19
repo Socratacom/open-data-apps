@@ -3,7 +3,7 @@
 Plugin Name: TinyMCE Advanced
 Plugin URI: http://www.laptoptips.ca/projects/tinymce-advanced/
 Description: Enables advanced features and plugins in TinyMCE, the visual editor in WordPress.
-Version: 4.4.1
+Version: 4.6.3
 Author: Andrew Ozz
 Author URI: http://www.laptoptips.ca/
 License: GPL2
@@ -31,7 +31,7 @@ if ( ! class_exists('Tinymce_Advanced') ) :
 
 class Tinymce_Advanced {
 
-	private $required_version = '4.6-beta';
+	private $required_version = '4.7-beta';
 	private $user_settings;
 	private $admin_settings;
 	private $admin_options;
@@ -47,6 +47,8 @@ class Tinymce_Advanced {
 	private $used_buttons = array();
 	private $all_buttons = array();
 	private $buttons_filter = array();
+	private $fontsize_formats = '8px 10px 12px 14px 16px 20px 24px 28px 32px 36px 48px 60px 72px 96px';
+	
 
 	private function get_default_user_settings() {
 		return array(
@@ -395,6 +397,8 @@ class Tinymce_Advanced {
 			'wp_help'		=> 'Keyboard Shortcuts',
 			'wp_more'		=> 'Read more...',
 			'wp_page'		=> 'Page break',
+
+			'tadv_mark'     => 'Mark',
 		);
 
 		// add/remove allowed buttons
@@ -437,6 +441,9 @@ class Tinymce_Advanced {
 
 		if ( in_array( 'searchreplace', $this->used_buttons, true ) )
 			$plugins[] = 'searchreplace';
+
+		if ( in_array( 'code', $this->used_buttons, true ) )
+			$plugins[] = 'code';
 
 	//	if ( in_array( 'insertlayer', $this->used_buttons, true ) )
 	//		$plugins[] = 'layer';
@@ -572,7 +579,7 @@ class Tinymce_Advanced {
 
 		if ( $this->check_admin_setting( 'no_autop' ) ) {
 			$init['wpautop'] = false;
-	//		$init['indent'] = true;
+			$init['indent'] = true;
 			$init['tadv_noautop'] = true;
 		}
 
@@ -590,7 +597,7 @@ class Tinymce_Advanced {
 		}
 
 		if ( $this->check_user_setting( 'fontsize_formats' ) ) {
-			$init['fontsize_formats'] =  '8px 10px 12px 14px 16px 20px 24px 28px 32px 36px 48px 60px';
+			$init['fontsize_formats'] =  $this->fontsize_formats;
 		}
 
 		if ( $this->check_user_setting( 'paste_images' ) ) {
@@ -800,7 +807,12 @@ class Tinymce_Advanced {
 		}
 
 		if ( ! empty( $admin_settings ) ) {
-			$save_admin_settings['options'] = $this->validate_settings( $admin_settings['options'], $this->get_all_admin_options() );
+			if ( ! empty( $admin_settings['options'] ) ) {
+				$save_admin_settings['options'] = $this->validate_settings( $admin_settings['options'], $this->get_all_admin_options() );
+			} else {
+				$save_admin_settings['options'] = '';
+			}
+
 			$disabled_editors = array_intersect( $this->get_editor_locations(), explode( ',', $admin_settings['disabled_editors'] ) );
 		} elseif ( isset( $_POST['tadv-save'] ) ) {
 			if ( ! empty( $_POST['admin_options'] ) && is_array( $_POST['admin_options'] ) ) {

@@ -3,14 +3,14 @@ Contributors: spivurno,bradvin,wpsmith
 Donate link: http://gravitywiz.com/donate/
 Tags: form,forms,gravity,gravity form,gravity forms,CPT,custom post types,custom post type,taxonomy,taxonomies
 Requires at least: 3.0.1
-Tested up to: 4.6
+Tested up to: 4.8
 Stable tag: 3.1.5
 
 Map your Gravity-Forms-generated posts to a custom post type and/or custom taxonomies.
 
 == Description ==
 
-> This plugin is an add-on for [Gravity Forms](http://bit.ly/gwizgravityforms). Make sure you visit [GravityWiz.com](http://gravitywiz.com/blog/) for more **free** Gravity Forms resources. And if you're looking to the largest collection of Gravity Forms plugins, check out [Gravity Perks](http://gravityperks.com).
+> This plugin is an add-on for [Gravity Forms](http://gravityforms.com). Make sure you visit [GravityWiz.com](http://gravitywiz.com/blog/) for more **free** Gravity Forms resources. And if you're looking to the largest collection of Gravity Forms plugins, check out [Gravity Perks](http://gravityperks.com).
 
 Gravity Forms allows you to create posts from a form submission using special Post Fields. By default, the submitted form will be created as a standard WordPress post. This plugin allows you to change the post type of the generated post. **No code required!** This plugin also provides the ability to assign the generated post to a custom taxonomy.
 
@@ -76,6 +76,14 @@ When populating a Drop Down field with a post type, you may wish to set the sele
 7. Setting: Mapping a Single Line Text field to a taxonomy (and enabling Enhanced UI)
 
 == Changelog ==
+
+= 3.1.7 =
+
+* Added support for displaying term label on Entry List and Export views (rather than term ID; does not work with Checkbox and Multi-select on Entry List).
+
+= 3.1.6 =
+
+* Added support for displaying term label on Entry Detail view (rather than term ID)
 
 = 3.1.5 =
 
