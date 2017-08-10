@@ -33,6 +33,9 @@ function script_enqueues()
   wp_register_script('gnmenu-js', get_template_directory_uri() . '/js/gnmenu.js', false, null, true);
   wp_enqueue_script('gnmenu-js');
 
+  wp_register_script('iframeresizer', get_template_directory_uri() . '/js/iframeResizer.min.js', false, null, true);
+  wp_enqueue_script('iframeresizer');
+
   /* Cookie Bar */
 
   wp_register_style('cookiebar-css', get_template_directory_uri() . '/css/cookiebar.css', false, null);
